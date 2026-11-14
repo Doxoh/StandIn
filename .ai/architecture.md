@@ -63,6 +63,15 @@ Für alles, was keine Cookies hat (MAUI, WPF, WinForms, Konsole, Worker, Blazor 
 
 Die Token-Antwort enthält `name_claim_type`, `role_claim_type` und die vollständige Claim-Liste, die der Server selbst bilden würde (`ToPrincipal`), damit Clients denselben Principal bauen. Der Zustand liegt nur im Speicher: ein Neuladen (Blazor WASM) meldet wieder den Start-Benutzer an.
 
+## Blazor (`StandIn.Blazor`)
+
+| Render-Art | Verfahren |
+| --- | --- |
+| Blazor Server / Server-Teil von Auto | Cookie wie MVC. Keine eigene Komponente: `UseStandInPicker()` blendet den Picker in die ausgelieferte HTML-Seite ein |
+| WebAssembly, WASM-Teil von Auto, Hybrid | Token: `services.AddStandInBlazor(o => o.ServerAddress = ...)` (nur in Development aufrufen), `<StandInPicker />` (Auswahlfeld mit den Benutzern des Servers), `StandInAuthenticationStateProvider` (Singleton, Principal aus der Token-Antwort), API-Clients mit `.AddStandInBearerToken()` |
+
+`StandIn.Blazor` hängt nur an `StandIn.Client` und `Microsoft.AspNetCore.Components.Authorization`/`.Web` (läuft im Browser). Der Zustand liegt nur im Speicher; ein Neuladen meldet wieder den Start-Benutzer (`StandInClientOptions.UserId`) an. Auch in Release ist der Client harmlos: ohne Token-Endpunkt auf dem Server schlägt die Anmeldung mit 404 fehl.
+
 ## Benutzerquellen
 
 `AddUser`, `AddUsersFromJson(pfadOderUrl)`, `AddUsersFromConfiguration(IConfiguration)` (gleiche Struktur wie das JSON, z. B. `GetSection("StandIn")` mit `Users:0:Id`), `AddConfigurationFromServer` und `TryAddConfigurationFromServer` (nur https, http nur für localhost). Jeder Benutzer merkt sich seine Quelle (`Local`, Pfad/URL, `Configuration`, Server-URL).
