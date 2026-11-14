@@ -321,7 +321,7 @@ public class AuthenticationTests
     }
 
     [Fact]
-    public async Task Root_path_can_be_changed()
+    public async Task Root_path_can_be_changed_and_the_old_path_redirects_with_308()
     {
         await using var app = await StartAsync(o => o.RootPath = "/dev-login");
 
@@ -329,6 +329,7 @@ public class AuthenticationTests
         var old = await app.Client.GetAsync("/stuntman/sign-in?OverrideUserId=admin&ReturnUrl=%2F");
 
         Assert.Equal(HttpStatusCode.Redirect, moved.StatusCode);
-        Assert.Equal(HttpStatusCode.NotFound, old.StatusCode);
+        Assert.Equal(HttpStatusCode.PermanentRedirect, old.StatusCode);
+        Assert.Equal("/dev-login/sign-in?OverrideUserId=admin&ReturnUrl=%2F", old.Headers.Location?.OriginalString);
     }
 }

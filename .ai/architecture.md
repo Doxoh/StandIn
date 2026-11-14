@@ -30,7 +30,16 @@ Alle Typen im Namespace `StandIn.AspNetCore`.
 | `GET sign-in?OverrideUserId=&ReturnUrl=` | Cookie setzen und weiterleiten; unbekannte Id 404; ohne Id Login-Seite |
 | `GET sign-out?ReturnUrl=` | Cookie löschen und weiterleiten |
 | `GET server` | alle Benutzer inkl. Tokens (nur mit `EnableServer()`) |
-| `GET users` | Benutzer ohne Tokens |
+| `GET users` | Benutzer ohne Tokens; CORS-Header für freigegebene Origins |
+| `POST token` | nur mit `EnableTokenEndpoint()`; Body `{ "userId": "..." }` (nur JSON), Antwort `access_token`, `token_type`, `user_id`, `name`, `claims`; 404 unbekannter Benutzer, 400 Body fehlt/kaputt, 415 kein JSON. Benutzer ohne Token bekommen beim Start ein zufälliges (nur im Speicher). Preflight (`OPTIONS`) für freigegebene Origins |
+
+## Getrennte Frontends, PathBase, Root-Pfad
+
+- `FrontendBaseUrl` (z. B. `https://localhost:5173/`): Rücksprung-Ziel, wenn weder `ReturnUrl` noch `Referer` vorliegen; die Origin gilt automatisch als freigegeben. Weitere Origins über `AddAllowedReturnOrigin`.
+- Freigegebene Origins gelten für Rücksprung **und** CORS (`users`, `token`). `server` bekommt nie CORS-Header. Fremde Origins bekommen keine CORS-Header.
+- Alle Links und Weiterleitungen nutzen `Request.PathBase`. Hinter einem Reverse Proxy muss die Anwendung `UseForwardedHeaders` (Host, Proto) selbst einsetzen; StandIn liest nur `Request.Host`, `Scheme` und `PathBase` und hat keine eigene Auswertung von `X-Forwarded-*`.
+- Ändert sich `RootPath`, leitet `{/stuntman}/{**rest}` per 308 (Methode bleibt) auf den neuen Pfad. Kein Redirect, wenn der neue Pfad unter `/stuntman` liegt (Schleife). Das Ziel ist immer lokal (führende `/` und `\` im Rest werden entfernt).
+- OpenAPI/Swagger: kein Code im Paket (keine zusätzliche Abhängigkeit). Das Bearer-Schema trägt die Anwendung selbst ein (`AddSecurityDefinition("Bearer", ...)`).
 
 ## JSON-Format (kompatibel zu Stuntman)
 

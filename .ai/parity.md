@@ -23,6 +23,5 @@
 - Tag Helper `<standin-picker />` (siehe [conventions.md](conventions.md)).
 - `StandIn.Testing` ohne `WebApplicationFactory`-Hilfsmethode und ohne Abhängigkeit zu `Microsoft.AspNetCore.Mvc.Testing`: Die Methode wäre ohne eigenen Einstiegspunkt nicht testbar. Das Muster steht in der Doku (`WithWebHostBuilder` + `AllowStandInTestHeader()` + `AsStandInUser`).
 
-## Noch offen (Phase 4)
-
-Token-Endpunkt, `FrontendBaseUrl`, PathBase und `X-Forwarded-*`, 308-Weiterleitung, CORS.
+- OpenAPI-Sicherheitsschema als Paketcode (siehe [architecture.md](architecture.md)).
+- Eigene Auswertung von `X-Forwarded-*`: das macht `UseForwardedHeaders` der Anwendung.

@@ -29,7 +29,8 @@ internal sealed class TestApp : IAsyncDisposable
     public static async Task<TestApp> StartAsync(
         Action<StandInOptions> configure,
         string environment = "Development",
-        Action<IServiceCollection>? configureServices = null)
+        Action<IServiceCollection>? configureServices = null,
+        string? pathBase = null)
     {
         var builder = WebApplication.CreateBuilder(new WebApplicationOptions { EnvironmentName = environment });
         builder.WebHost.UseTestServer();
@@ -39,6 +40,13 @@ internal sealed class TestApp : IAsyncDisposable
         configureServices?.Invoke(builder.Services);
 
         var app = builder.Build();
+
+        if (pathBase is not null)
+        {
+            app.UsePathBase(pathBase);
+            app.UseRouting();
+        }
+
         app.UseAuthentication();
         app.UseAuthorization();
         app.UseStandInPicker();

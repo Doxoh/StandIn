@@ -13,6 +13,7 @@ public sealed class StandInOptions : AuthenticationSchemeOptions
     private readonly List<StandInUser> _users = new();
     private readonly HashSet<string> _allowedReturnOrigins = new(StringComparer.OrdinalIgnoreCase);
     private string _rootPath = StandInDefaults.DefaultRootPath;
+    private string? _frontendBaseUrl;
 
     /// <summary>Basispfad der StandIn-Endpunkte, Standard "/stuntman" (ohne abschliessenden Schraegstrich).</summary>
     public string RootPath
@@ -46,6 +47,28 @@ public sealed class StandInOptions : AuthenticationSchemeOptions
     /// deshalb nur in Tests einschalten.
     /// </summary>
     public bool AllowTestHeader { get; set; }
+
+    /// <summary>
+    /// Adresse des Frontends, wenn Frontend und API getrennt laufen (z. B. "https://localhost:5173/"). Dorthin geht der
+    /// Rücksprung nach Anmelden/Abmelden, wenn weder ReturnUrl noch Referer vorliegen. Die Origin gilt automatisch
+    /// als freigegeben (Rücksprung und CORS).
+    /// </summary>
+    public string? FrontendBaseUrl
+    {
+        get => _frontendBaseUrl;
+        set
+        {
+            if (value is not null)
+            {
+                AddAllowedReturnOrigin(value);
+            }
+
+            _frontendBaseUrl = value;
+        }
+    }
+
+    /// <summary>Ist <c>POST {RootPath}/token</c> aktiv? Achtung: er gibt ohne Anmeldung ein Bearer-Token für jeden Benutzer aus.</summary>
+    public bool TokenEndpointEnabled { get; private set; }
 
     public StandInAlignment UserPickerAlignment { get; private set; }
 
@@ -149,6 +172,16 @@ public sealed class StandInOptions : AuthenticationSchemeOptions
         return this;
     }
 
+    /// <summary>
+    /// Aktiviert <c>POST {RootPath}/token</c> mit <c>{ "userId": "..." }</c>: liefert das Bearer-Token des Benutzers
+    /// (für Blazor WebAssembly, MAUI, WPF, SPAs). Benutzer ohne Token bekommen ein zufälliges Entwicklungs-Token.
+    /// </summary>
+    public StandInOptions EnableTokenEndpoint()
+    {
+        TokenEndpointEnabled = true;
+        return this;
+    }
+
     public StandInOptions SetUserPickerAlignment(StandInAlignment alignment)
     {
         UserPickerAlignment = alignment;
@@ -168,6 +201,12 @@ public sealed class StandInOptions : AuthenticationSchemeOptions
 
         _allowedReturnOrigins.Add(uri.GetLeftPart(UriPartial.Authority));
         return this;
+    }
+
+    /// <summary>Darf diese Origin (aus dem <c>Origin</c>-Header) die Endpunkte per CORS lesen?</summary>
+    internal bool IsAllowedOrigin(string? origin)
+    {
+        return !string.IsNullOrEmpty(origin) && _allowedReturnOrigins.Contains(origin);
     }
 
     internal StandInOptions AddUser(StandInUser user, string? source)
