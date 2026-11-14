@@ -2,6 +2,7 @@ using System;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -47,6 +48,23 @@ public class TokenEndpointTests
         Assert.Equal("Bearer", json.GetProperty("token_type").GetString());
         Assert.Equal("admin", json.GetProperty("user_id").GetString());
         Assert.Equal("Administrator", json.GetProperty("claims")[0].GetProperty("value").GetString());
+        Assert.Equal("name", json.GetProperty("name_claim_type").GetString());
+        Assert.Equal("role", json.GetProperty("role_claim_type").GetString());
+    }
+
+    [Fact]
+    public async Task Token_response_carries_the_claims_the_server_builds()
+    {
+        await using var app = await StartAsync();
+
+        var json = await ReadAsync(await app.Client.PostAsJsonAsync("/stuntman/token", new { userId = "admin" }));
+        var claims = json.GetProperty("claims").EnumerateArray()
+            .Select(c => (Type: c.GetProperty("type").GetString(), Value: c.GetProperty("value").GetString()))
+            .ToList();
+
+        Assert.Contains(("name", "Local Admin"), claims);
+        Assert.Contains(("standin_user_id", "admin"), claims);
+        Assert.DoesNotContain(claims, c => c.Type == "access_token");
     }
 
     [Fact]

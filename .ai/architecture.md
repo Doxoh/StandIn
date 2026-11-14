@@ -51,6 +51,18 @@ Alle Typen im Namespace `StandIn.AspNetCore`.
 
 Schreiben in PascalCase, `null` weggelassen. Lesen ohne Beachtung der Groß-/Kleinschreibung, Kommentare und Komma am Ende erlaubt.
 
+## Client (`StandIn.Client`)
+
+Für alles, was keine Cookies hat (MAUI, WPF, WinForms, Konsole, Worker, Blazor WASM/Hybrid). Hängt nur an `Microsoft.Extensions.Http`, nicht an `StandIn.AspNetCore`; läuft damit auch im Browser.
+
+| Typ | Aufgabe |
+| --- | --- |
+| `StandInSession` | Singleton: `GetUsersAsync()` (`GET users`), `SignInAsync(id)` (`POST token`), `SignOut()`, `Current`, `Changed`, `GetAccessTokenAsync()` (meldet beim ersten Aufruf den Start-Benutzer an) |
+| `StandInTokenHandler` | `DelegatingHandler`: setzt `Authorization: Bearer` des angemeldeten Benutzers; ein vorhandener Header bleibt |
+| `AddStandInClient(o => o.ServerAddress = ...)` | registriert die Session; danach `services.AddHttpClient("api").AddStandInBearerToken()` |
+
+Die Token-Antwort enthält `name_claim_type`, `role_claim_type` und die vollständige Claim-Liste, die der Server selbst bilden würde (`ToPrincipal`), damit Clients denselben Principal bauen. Der Zustand liegt nur im Speicher: ein Neuladen (Blazor WASM) meldet wieder den Start-Benutzer an.
+
 ## Benutzerquellen
 
 `AddUser`, `AddUsersFromJson(pfadOderUrl)`, `AddUsersFromConfiguration(IConfiguration)` (gleiche Struktur wie das JSON, z. B. `GetSection("StandIn")` mit `Users:0:Id`), `AddConfigurationFromServer` und `TryAddConfigurationFromServer` (nur https, http nur für localhost). Jeder Benutzer merkt sich seine Quelle (`Local`, Pfad/URL, `Configuration`, Server-URL).
