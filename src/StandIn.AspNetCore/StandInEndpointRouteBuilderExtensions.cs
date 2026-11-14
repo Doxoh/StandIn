@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 
 namespace StandIn.AspNetCore;
 
@@ -22,15 +22,20 @@ public static class StandInEndpointRouteBuilderExtensions
         ArgumentNullException.ThrowIfNull(endpoints);
 
         var services = endpoints.ServiceProvider;
+        var options = services.GetStandInOptions();
 
-        if (services.GetService<StandInMarker>() is null)
+        if (options is null)
         {
             return endpoints;
         }
 
-        // Die Optionen sind nach dem Start fix, daher einmal lesen und bedingt mappen.
-        var options = services.GetRequiredService<IOptionsMonitor<StandInOptions>>()
-            .Get(StandInDefaults.AuthenticationScheme);
+        if (options.ServerEnabled)
+        {
+            services.GetRequiredService<ILoggerFactory>().CreateLogger("StandIn").LogWarning(
+                "StandIn: the endpoint {Path} returns all users including their access tokens without authentication. Use it for development only.",
+                options.ServerPath);
+        }
+
         var group = endpoints.MapGroup(options.RootPath);
 
         if (options.AllowCookieAuthentication)

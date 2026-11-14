@@ -2,13 +2,12 @@
 
   <PropertyGroup>
     <PackageId>StandIn.Testing</PackageId>
-    <Description>Test-Hilfen fuer StandIn: Benutzer in WebApplicationFactory- und HttpClient-basierten Integrationstests setzen.</Description>
+    <Description>Test-Hilfen fuer StandIn: Anfragen in HttpClient- und WebApplicationFactory-basierten Integrationstests als Benutzer senden.</Description>
     <RootNamespace>StandIn.Testing</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
   </ItemGroup>
 
   <ItemGroup>

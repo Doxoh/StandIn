@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
+using Microsoft.Extensions.Configuration;
 
 namespace StandIn.AspNetCore;
 
@@ -51,6 +52,17 @@ internal static class StandInUserLoader
         var document = JsonSerializer.Deserialize<UsersDocument>(json, ReadOptions)
             ?? throw new InvalidDataException("The StandIn user JSON is empty.");
 
+        return ToUsers(document);
+    }
+
+    /// <summary>Liest dieselbe Struktur wie das JSON ({ "Users": [ ... ] }) aus einem Konfigurationsabschnitt.</summary>
+    public static IReadOnlyList<StandInUser> FromConfiguration(IConfiguration configuration)
+    {
+        return ToUsers(configuration.Get<UsersDocument>() ?? new UsersDocument());
+    }
+
+    private static List<StandInUser> ToUsers(UsersDocument document)
+    {
         var users = new List<StandInUser>();
 
         foreach (var dto in document.Users ?? new List<UserDto>())
