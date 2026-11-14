@@ -32,7 +32,7 @@ jobs:
       - run: dotnet build --no-restore -c Release
       - run: dotnet test --no-build -c Release --logger "trx;LogFileName=test.trx" --collect:"XPlat Code Coverage"
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: testergebnisse-${{ matrix.os }}
@@ -52,7 +52,7 @@ jobs:
             8.0.x
             10.0.x
       - run: dotnet pack -c Release -o artifacts
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: nuget-pakete
           path: artifacts/*.*nupkg
