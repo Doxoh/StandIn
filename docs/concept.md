@@ -1,7 +1,6 @@
 # Umsetzungskonzept StandIn
 
-Quelle ist das Konzeptdokument in Claude Docs („Umsetzungskonzept: Stuntman-Nachfolger für ASP.NET Core“).
-Diese Datei fasst die verbindlichen Entscheidungen für die Entwicklung zusammen.
+Diese Datei fasst die verbindlichen Entscheidungen und den ursprünglichen Entwurf zusammen. Den aktuellen Stand der Umsetzung zeigt die [Roadmap](../.ai/roadmap.md).
 
 ## Entscheidungen
 
