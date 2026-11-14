@@ -1,13 +1,15 @@
 name: Release
 
-# Veroeffentlicht nur bei einem Git-Tag wie v0.1.0. Der NuGet-Key liegt als
-# Secret NUGET_API_KEY im Repo (Settings > Secrets and variables > Actions).
+# Veroeffentlicht nur bei einem Git-Tag wie v0.1.0. Anmeldung bei nuget.org per
+# Trusted Publishing (OIDC): kein API-Key, nur das Secret NUGET_USER (nuget.org-Profilname).
+# Die Richtlinie auf nuget.org nennt Repo Doxoh/StandIn, Workflow release.yml, Umgebung nuget.
 on:
   push:
     tags: ["v*"]
 
 permissions:
   contents: write
+  id-token: write   # OIDC-Token fuer NuGet/login
 
 jobs:
   publish:
@@ -24,8 +26,13 @@ jobs:
             10.0.x
       - run: dotnet test -c Release
       - run: dotnet pack -c Release -o artifacts
+      - name: NuGet-Anmeldung (OIDC, kurzlebiger Key)
+        id: login
+        uses: NuGet/login@v1
+        with:
+          user: ${{ secrets.NUGET_USER }}   # Profilname, nicht die E-Mail-Adresse
       - name: Auf NuGet veroeffentlichen
-        run: dotnet nuget push "artifacts/*.nupkg" --api-key "${{ secrets.NUGET_API_KEY }}" --source https://api.nuget.org/v3/index.json --skip-duplicate
+        run: dotnet nuget push "artifacts/*.nupkg" --api-key "${{ steps.login.outputs.NUGET_API_KEY }}" --source https://api.nuget.org/v3/index.json --skip-duplicate
       - name: GitHub-Release anlegen
         uses: softprops/action-gh-release@v2
         with:
