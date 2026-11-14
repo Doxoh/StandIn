@@ -1,6 +1,6 @@
 name: Release
 
-# Publishes only on a git tag like v0.1.0. Signs in to nuget.org through
+# Publishes only on a git tag like v1.0.1. Signs in to nuget.org through
 # Trusted Publishing (OIDC): no API key, only the secret NUGET_USER (nuget.org profile name).
 # The policy on nuget.org names repo Doxoh/StandIn, workflow release.yml, environment nuget.
 on:
