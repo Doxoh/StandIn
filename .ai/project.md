@@ -1,22 +1,22 @@
-# Projekt
+# Project
 
-**StandIn** ist der gepflegte Nachfolger von [RimDev.Stuntman](https://github.com/ritterim/stuntman) (archiviert, MIT). Es simuliert Benutzer während der Entwicklung: Anmeldung per Cookie mit User Picker und per Bearer-Token, für ASP.NET Core Anwendungen und REST-APIs.
+**StandIn** is the maintained successor of [RimDev.Stuntman](https://github.com/ritterim/stuntman) (archived, MIT). It simulates users during development: sign-in by cookie with a user picker and by bearer token, for ASP.NET Core applications and REST APIs.
 
-- Lizenz MIT (Till Schreiber); Stuntman-Lizenztext in `THIRD-PARTY-NOTICES.md`.
-- Ziel-Frameworks: `net8.0;net10.0`. .NET 8 und 9 sind seit 10. November 2026 ohne Support, .NET 10 LTS bis November 2028.
-- Eigentümer: Till (GitHub `Doxoh`), Repo `Doxoh/StandIn`, vorerst privat, später öffentlich mit NuGet-Veröffentlichung.
-- Standardpfad bleibt `/stuntman` (Migration ohne Umbau), Option `FrontendBaseUrl` ist geplant.
+- License MIT (Till Schreiber); the Stuntman license text is in `THIRD-PARTY-NOTICES.md`.
+- Target frameworks: `net8.0;net10.0`. .NET 8 and 9 have been out of support since 10 November 2026, .NET 10 LTS runs until November 2028.
+- Owner: Till (GitHub `Doxoh`), repo `Doxoh/StandIn`, public with NuGet publishing.
+- The default path stays `/stuntman` (migration without changes); `FrontendBaseUrl` covers separate frontends.
 
-## Pakete
+## Packages
 
-| Projekt | Stand |
+| Project | Status |
 | --- | --- |
-| `src/StandIn.AspNetCore` | Kern, umgesetzt (Phase 1 und 2) |
-| `src/StandIn.Blazor` | Picker-Komponente, AuthenticationStateProvider (Phase 5b) |
-| `src/StandIn.Client` | Session und Token-Handler (Phase 5a) |
-| `src/StandIn.Testing` | Test-Header-Hilfen (Phase 3) |
-| `samples/MinimalApi`, `samples/Mvc` | Beispiel-Apps (Phase 5c) |
+| `src/StandIn.AspNetCore` | Core, done (phases 1 and 2) |
+| `src/StandIn.Blazor` | Picker component, AuthenticationStateProvider (phase 5b) |
+| `src/StandIn.Client` | Session and token handler (phase 5a) |
+| `src/StandIn.Testing` | Test header helpers (phase 3) |
+| `samples/MinimalApi`, `samples/Mvc` | Sample apps (phase 5c) |
 | `tests/StandIn.AspNetCore.Tests` | xUnit |
-| `tests/StandIn.Samples.Tests` | Smoke-Tests der Beispiel-Apps |
+| `tests/StandIn.Samples.Tests` | Smoke tests of the sample apps |
 
-Stand der Phasen siehe [roadmap.md](roadmap.md).
+For the status of the phases see [roadmap.md](roadmap.md).

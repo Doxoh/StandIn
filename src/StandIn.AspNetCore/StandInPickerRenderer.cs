@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace StandIn.AspNetCore;
 
-/// <summary>Erzeugt das HTML fuer den User Picker und die Login-Seite. Ohne JavaScript (details/summary).</summary>
+/// <summary>Renders the HTML for the user picker and the login page. Without JavaScript (details/summary).</summary>
 internal static class StandInPickerRenderer
 {
     private const string Css = """
@@ -63,7 +63,7 @@ internal static class StandInPickerRenderer
         var html = new StringBuilder();
         html.Append("<!DOCTYPE html><html><head><meta charset=\"utf-8\"><title>StandIn</title>")
             .Append("<style>body{font:16px system-ui,sans-serif;margin:2rem}li{margin:.5rem 0}</style></head><body>")
-            .Append("<h1>StandIn: Benutzer w&auml;hlen</h1><ul>");
+            .Append("<h1>StandIn: choose a user</h1><ul>");
 
         var basePath = pathBase.HasValue ? pathBase.Value! : string.Empty;
 

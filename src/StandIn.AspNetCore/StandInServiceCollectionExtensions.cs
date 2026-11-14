@@ -8,14 +8,14 @@ using Microsoft.Extensions.Options;
 
 namespace StandIn.AspNetCore;
 
-/// <summary>Marker: ist im Container vorhanden, wenn StandIn in dieser Umgebung aktiv ist.</summary>
+/// <summary>Marker: present in the container when StandIn is active in this environment.</summary>
 internal sealed class StandInMarker
 {
 }
 
 internal static class StandInServiceProviderExtensions
 {
-    /// <summary>Die Optionen, oder <c>null</c>, wenn StandIn in dieser Umgebung nicht aktiv ist.</summary>
+    /// <summary>The options, or <c>null</c> if StandIn is not active in this environment.</summary>
     internal static StandInOptions? GetStandInOptions(this IServiceProvider services)
     {
         return services.GetService<StandInMarker>() is null
@@ -27,11 +27,11 @@ internal static class StandInServiceProviderExtensions
 public static class StandInServiceCollectionExtensions
 {
     /// <summary>
-    /// Registriert StandIn. Aktiv nur in der Umgebung "Development" oder in den ausdruecklich
-    /// freigegebenen <paramref name="additionalEnvironments"/>. In allen anderen Umgebungen (auch
-    /// Production) passiert nichts: derselbe Code kann also ohne Fallunterscheidung ausgeliefert werden.
+    /// Registers StandIn. Active only in the "Development" environment or in the explicitly
+    /// allowed <paramref name="additionalEnvironments"/>. In all other environments (including
+    /// Production) nothing happens: the same code can therefore ship without a case distinction.
     /// </summary>
-    /// <exception cref="ArgumentException">"Production" ist in <paramref name="additionalEnvironments"/> nicht erlaubt.</exception>
+    /// <exception cref="ArgumentException">"Production" is not allowed in <paramref name="additionalEnvironments"/>.</exception>
     public static AuthenticationBuilder AddStandIn(
         this AuthenticationBuilder builder,
         IHostEnvironment environment,
@@ -60,7 +60,7 @@ public static class StandInServiceCollectionExtensions
 
         builder.Services.AddSingleton<StandInMarker>();
 
-        // Wie Stuntman: StandIn uebernimmt als Standard-Schema, solange es aktiv ist.
+        // Like Stuntman: StandIn becomes the default scheme as long as it is active.
         builder.Services.Configure<AuthenticationOptions>(options =>
         {
             options.DefaultScheme = StandInDefaults.AuthenticationScheme;

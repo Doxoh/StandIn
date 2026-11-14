@@ -7,7 +7,7 @@ namespace StandIn.AspNetCore;
 
 internal static class StandInViewHelper
 {
-    /// <summary>Leer, wenn StandIn in dieser Umgebung nicht aktiv ist.</summary>
+    /// <summary>Empty if StandIn is not active in this environment.</summary>
     public static string Render(HttpContext context, string? returnUrl)
     {
         var options = context.RequestServices.GetStandInOptions();
@@ -17,7 +17,7 @@ internal static class StandInViewHelper
             return string.Empty;
         }
 
-        // Ohne Angabe zurueck auf die aktuelle Seite.
+        // Without a value, back to the current page.
         var target = returnUrl ?? $"{context.Request.PathBase}{context.Request.Path}{context.Request.QueryString}";
 
         return StandInPickerRenderer.RenderPicker(options, context.User, context.Request.PathBase.Value ?? string.Empty, target);

@@ -15,9 +15,9 @@ namespace StandIn.AspNetCore;
 public static class StandInEndpointRouteBuilderExtensions
 {
     /// <summary>
-    /// Bildet die StandIn-Endpunkte unter dem Root-Pfad (Standard "/stuntman") ab:
-    /// sign-in, sign-out, server (nur mit EnableServer) und users.
-    /// Ist StandIn in dieser Umgebung nicht aktiv, passiert nichts.
+    /// Maps the StandIn endpoints under the root path (default "/stuntman"):
+    /// sign-in, sign-out, server (only with EnableServer) and users.
+    /// If StandIn is not active in this environment, nothing happens.
     /// </summary>
     public static IEndpointRouteBuilder MapStandIn(this IEndpointRouteBuilder endpoints)
     {
@@ -100,7 +100,7 @@ public static class StandInEndpointRouteBuilderExtensions
                 options.RootPath + "/token");
         }
 
-        // Alte Links und Lesezeichen funktionieren nach einem geaenderten Root-Pfad weiter.
+        // Old links and bookmarks keep working after the root path was changed.
         if (!IsAtOrUnder(options.RootPath, StandInDefaults.DefaultRootPath))
         {
             endpoints.Map(StandInDefaults.DefaultRootPath + "/{**rest}", (HttpContext context, string? rest) =>
@@ -114,8 +114,8 @@ public static class StandInEndpointRouteBuilderExtensions
     }
 
     /// <summary>
-    /// Ziel nach dem Anmelden: ReturnUrl, sonst der Referer (wie bei Stuntman). Nur lokale oder
-    /// freigegebene Ziele; alles andere fuehrt zur Startseite der Anwendung.
+    /// Target after sign-in: ReturnUrl, otherwise the referer (like Stuntman). Only local or
+    /// allowed targets; anything else leads to the start page of the application.
     /// </summary>
     internal static string ResolveReturnUrl(HttpContext context, StandInOptions options)
     {
@@ -141,7 +141,7 @@ public static class StandInEndpointRouteBuilderExtensions
 
     private static void MapToken(RouteGroupBuilder group, StandInOptions options)
     {
-        // Benutzer ohne Token bekommen ein zufaelliges Entwicklungs-Token (nur im Speicher).
+        // Users without a token get a random development token (in memory only).
         foreach (var user in options.Users.Where(user => user.AccessToken is null))
         {
             user.SetAccessToken(Convert.ToHexString(RandomNumberGenerator.GetBytes(16)));
@@ -151,7 +151,7 @@ public static class StandInEndpointRouteBuilderExtensions
         {
             AddCorsHeaders(context, options);
 
-            // Nur JSON: ein fremdes Formular kann den Endpunkt nicht anstossen, und CORS verlangt einen Preflight.
+            // JSON only: a foreign form cannot trigger the endpoint, and CORS requires a preflight.
             if (!context.Request.HasJsonContentType())
             {
                 context.Response.StatusCode = StatusCodes.Status415UnsupportedMediaType;
@@ -185,7 +185,7 @@ public static class StandInEndpointRouteBuilderExtensions
                 return;
             }
 
-            // Die Claims, die der Server fuer den Benutzer bildet: Clients bauen daraus denselben Principal.
+            // The claims the server builds for the user: clients build the same principal from them.
             var principal = user.ToPrincipal(StandInDefaults.AuthenticationScheme);
 
             await context.Response.WriteAsJsonAsync(new
@@ -208,7 +208,7 @@ public static class StandInEndpointRouteBuilderExtensions
         return context.Response.WriteAsync(text);
     }
 
-    /// <summary>CORS nur fuer freigegebene Origins (FrontendBaseUrl, AddAllowedReturnOrigin).</summary>
+    /// <summary>CORS only for allowed origins (FrontendBaseUrl, AddAllowedReturnOrigin).</summary>
     private static bool AddCorsHeaders(HttpContext context, StandInOptions options)
     {
         var origin = context.Request.Headers.Origin.ToString();
@@ -223,7 +223,7 @@ public static class StandInEndpointRouteBuilderExtensions
         return true;
     }
 
-    /// <summary>Preflight fuer Browser-Frontends: das JSON-POST an den Token-Endpunkt braucht ihn.</summary>
+    /// <summary>Preflight for browser frontends: the JSON POST to the token endpoint needs it.</summary>
     private static void MapTokenPreflight(RouteGroupBuilder group, StandInOptions options)
     {
         group.MapMethods("/token", new[] { HttpMethods.Options }, (HttpContext context) =>

@@ -1,20 +1,20 @@
 name: Release
 
-# Veroeffentlicht nur bei einem Git-Tag wie v0.1.0. Anmeldung bei nuget.org per
-# Trusted Publishing (OIDC): kein API-Key, nur das Secret NUGET_USER (nuget.org-Profilname).
-# Die Richtlinie auf nuget.org nennt Repo Doxoh/StandIn, Workflow release.yml, Umgebung nuget.
+# Publishes only on a git tag like v0.1.0. Signs in to nuget.org through
+# Trusted Publishing (OIDC): no API key, only the secret NUGET_USER (nuget.org profile name).
+# The policy on nuget.org names repo Doxoh/StandIn, workflow release.yml, environment nuget.
 on:
   push:
     tags: ["v*"]
 
 permissions:
   contents: write
-  id-token: write   # OIDC-Token fuer NuGet/login
+  id-token: write   # OIDC token for NuGet/login
 
 jobs:
   publish:
     runs-on: ubuntu-latest
-    environment: nuget   # Umgebung mit Pflicht-Freigabe einrichten
+    environment: nuget   # set up the environment with required approval
     steps:
       - uses: actions/checkout@v7
         with:
@@ -26,14 +26,14 @@ jobs:
             10.0.x
       - run: dotnet test -c Release
       - run: dotnet pack -c Release -o artifacts
-      - name: NuGet-Anmeldung (OIDC, kurzlebiger Key)
+      - name: NuGet login (OIDC, short-lived key)
         id: login
         uses: NuGet/login@v1
         with:
-          user: ${{ secrets.NUGET_USER }}   # Profilname, nicht die E-Mail-Adresse
-      - name: Auf NuGet veroeffentlichen
+          user: ${{ secrets.NUGET_USER }}   # profile name, not the email address
+      - name: Publish to NuGet
         run: dotnet nuget push "artifacts/*.nupkg" --api-key "${{ steps.login.outputs.NUGET_API_KEY }}" --source https://api.nuget.org/v3/index.json --skip-duplicate
-      - name: GitHub-Release anlegen
+      - name: Create GitHub release
         uses: softprops/action-gh-release@v2
         with:
           generate_release_notes: true

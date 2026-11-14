@@ -1,38 +1,38 @@
-# Migration von RimDev.Stuntman
+# Migrating from RimDev.Stuntman
 
-StandIn ist ein Nachfolger mit demselben Konzept, den Pfaden unter `/stuntman` und derselben JSON-Datei. Die meisten Projekte brauchen nur umbenannte Typen.
+StandIn is a successor with the same concept, the same paths under `/stuntman` and the same JSON file. Most projects only need renamed types.
 
-## Schritte
+## Steps
 
-1. Paket tauschen: `RimDev.Stuntman.*` entfernen, `StandIn.AspNetCore` hinzufügen.
-2. Typen umbenennen: `StuntmanUser` → `StandInUser`, `StuntmanOptions` → `StandInOptions`.
-3. Registrierung auf `AddAuthentication().AddStandIn(environment, options => ...)` und `app.MapStandIn()` umstellen (siehe README). Der Aufruf gehört zwischen `UseAuthentication` und die Endpunkte.
-4. Picker in Views: `@Html.StandInUserPicker()`. Optional lässt sich eine `returnUrl` übergeben.
-5. Eigene Pfade, Cookies oder Header bleiben, wie sie waren: `/stuntman/sign-in`, `sign-out`, `server`, JSON-Format und Bearer-Verhalten sind gleich.
+1. Swap the package: remove `RimDev.Stuntman.*`, add `StandIn.AspNetCore`.
+2. Rename types: `StuntmanUser` → `StandInUser`, `StuntmanOptions` → `StandInOptions`.
+3. Switch the registration to `AddAuthentication().AddStandIn(environment, options => ...)` and `app.MapStandIn()` (see the README). The call belongs between `UseAuthentication` and the endpoints.
+4. Picker in views: `@Html.StandInUserPicker()`. You can optionally pass a `returnUrl`.
+5. Your own paths, cookies and headers stay as they were: `/stuntman/sign-in`, `sign-out`, `server`, the JSON format and the bearer behavior are the same.
 
-Die Optionen heißen weiter `AddUser`, `AddUsersFromJson`, `AddConfigurationFromServer`, `TryAddConfigurationFromServer`, `EnableServer`, `SetUserPickerAlignment`, `AllowCookieAuthentication`, `AllowBearerTokenAuthentication`, `AllowBearerTokenPassthrough` und `AfterBearerValidateIdentity`. An `StandInUser` gibt es `AddClaim`, `AddName`, `AddRole`, `SetAccessToken`, `SetDescription` und die drei Konstruktoren.
+The options keep their names: `AddUser`, `AddUsersFromJson`, `AddConfigurationFromServer`, `TryAddConfigurationFromServer`, `EnableServer`, `SetUserPickerAlignment`, `AllowCookieAuthentication`, `AllowBearerTokenAuthentication`, `AllowBearerTokenPassthrough` and `AfterBearerValidateIdentity`. `StandInUser` has `AddClaim`, `AddName`, `AddRole`, `SetAccessToken`, `SetDescription` and the three constructors.
 
-## Was sich ändert
+## What changes
 
-| Thema | RimDev.Stuntman | StandIn |
+| Topic | RimDev.Stuntman | StandIn |
 | --- | --- | --- |
-| Production | wirft beim Start | tut nichts; nur ein ausdrücklich freigegebenes `Production` wirft |
-| `ReturnUrl` | beliebig | nur lokal oder über `AddAllowedReturnOrigin` freigegeben |
-| Authorization-Header | jedes Schema | nur `Bearer` |
-| Claims | wie konfiguriert | zusätzlich `ClaimTypes.Name`, `NameIdentifier`, `standin_user_id` |
-| 400/403 bei Bearer | beim Authentifizieren | beim Challenge geschrieben |
-| Server-Endpunkt | immer erreichbar | nur mit `EnableServer()` und nur in Development |
+| Production | throws at startup | does nothing; only an explicitly allowed `Production` throws |
+| `ReturnUrl` | any | local only, or allowed through `AddAllowedReturnOrigin` |
+| Authorization header | any scheme | `Bearer` only |
+| Claims | as configured | additionally `ClaimTypes.Name`, `NameIdentifier`, `standin_user_id` |
+| 400/403 for bearer | while authenticating | written at challenge |
+| Server endpoint | always reachable | only with `EnableServer()` and only in Development |
 
-Die Gründe stehen in [.ai/parity.md](../.ai/parity.md) und [.ai/security.md](../.ai/security.md).
+The reasons are in [.ai/parity.md](../.ai/parity.md) and [.ai/security.md](../.ai/security.md).
 
-## Neu in StandIn
+## New in StandIn
 
-- `POST /stuntman/token` für Clients ohne Cookie (`EnableTokenEndpoint()`), dazu `StandIn.Client` und `StandIn.Blazor`.
-- `FrontendBaseUrl` für ein Frontend auf anderer Adresse, mit CORS nur für freigegebene Origins.
-- `SetUserPickerVerticalPosition` (Picker unten statt oben).
-- `AddUsersFromConfiguration` (Benutzer aus `appsettings`).
-- Test-Header `X-Stuntman-User` (`AllowTestHeader`, standardmäßig aus) und das Paket `StandIn.Testing`.
+- `POST /stuntman/token` for clients without cookies (`EnableTokenEndpoint()`), plus `StandIn.Client` and `StandIn.Blazor`.
+- `FrontendBaseUrl` for a frontend on another address, with CORS only for allowed origins.
+- `SetUserPickerVerticalPosition` (picker at the bottom instead of the top).
+- `AddUsersFromConfiguration` (users from `appsettings`).
+- Test header `X-Stuntman-User` (`AllowTestHeader`, off by default) and the `StandIn.Testing` package.
 
-## Prüfen
+## Checking
 
-Die Original-API habe ich aus der Erinnerung gegenübergestellt, nicht gegen jede Version des Originals geprüft. Wenn der Compiler nach einer Umbenennung noch etwas nicht findet, steht der Name in [.ai/parity.md](../.ai/parity.md) oder fehlt bewusst.
+I compared the original API from memory, not against every version of the original. If the compiler still cannot find something after a rename, the name is listed in [.ai/parity.md](../.ai/parity.md) or was left out on purpose.

@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <PackageId>StandIn.Testing</PackageId>
-    <Description>Test-Hilfen fuer StandIn: Anfragen in HttpClient- und WebApplicationFactory-basierten Integrationstests als Benutzer senden.</Description>
+    <Description>Test helpers for StandIn: send requests as a user in HttpClient and WebApplicationFactory based integration tests.</Description>
     <RootNamespace>StandIn.Testing</RootNamespace>
   </PropertyGroup>
 

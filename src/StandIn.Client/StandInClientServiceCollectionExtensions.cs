@@ -9,7 +9,7 @@ public static class StandInClientServiceCollectionExtensions
     private const string SessionClientName = "StandIn";
 
     /// <summary>
-    /// Registriert die <see cref="StandInSession"/>. Danach den Token-Handler an die API-Clients haengen:
+    /// Registers the <see cref="StandInSession"/>. Then attach the token handler to the API clients:
     /// <c>services.AddHttpClient("api").AddStandInBearerToken()</c>.
     /// </summary>
     public static IServiceCollection AddStandInClient(this IServiceCollection services, Action<StandInClientOptions> configure)
@@ -31,7 +31,7 @@ public static class StandInClientServiceCollectionExtensions
         return services;
     }
 
-    /// <summary>Setzt das Bearer-Token des StandIn-Benutzers auf Anfragen dieses Clients (nicht auf den StandIn-Client selbst anwenden).</summary>
+    /// <summary>Sets the bearer token of the StandIn user on requests of this client (do not apply it to the StandIn client itself).</summary>
     public static IHttpClientBuilder AddStandInBearerToken(this IHttpClientBuilder builder)
     {
         ArgumentNullException.ThrowIfNull(builder);

@@ -1,21 +1,21 @@
-# .ai – Wissensbasis für KI-Agenten
+# .ai – knowledge base for AI agents
 
-Kurzer, gepflegter Projektkontext für Claude und andere Agenten. Zuerst diese Datei lesen, dann nur die Datei, die zur Aufgabe passt.
+Short, maintained project context for Claude and other agents. Read this file first, then only the file that fits the task.
 
-| Datei | Inhalt |
+| File | Content |
 | --- | --- |
-| [project.md](project.md) | Ziel, Umfang, Stand, Repo-Aufbau |
-| [architecture.md](architecture.md) | Klassen, Ablauf, Endpunkte, JSON-Format |
-| [decisions.md](decisions.md) | Entscheidungen des Eigentümers (verbindlich) |
-| [security.md](security.md) | Sicherheitsregeln, die nie aufgeweicht werden |
-| [parity.md](parity.md) | Parität zu RimDev.Stuntman und bewusste Abweichungen |
-| [conventions.md](conventions.md) | Code-, Test- und Dokumentationsregeln |
-| [workflow.md](workflow.md) | GitHub, CI, Release, Arbeitsweise |
-| [roadmap.md](roadmap.md) | Phasen und offene Issues |
+| [project.md](project.md) | Goal, scope, status, repo layout |
+| [architecture.md](architecture.md) | Classes, flow, endpoints, JSON format |
+| [decisions.md](decisions.md) | Decisions by the owner (binding) |
+| [security.md](security.md) | Security rules that are never relaxed |
+| [parity.md](parity.md) | Parity with RimDev.Stuntman and deliberate deviations |
+| [conventions.md](conventions.md) | Code, test and documentation rules |
+| [workflow.md](workflow.md) | GitHub, CI, release, way of working |
+| [roadmap.md](roadmap.md) | Phases and open issues |
 
-## Regeln für diese Wissensbasis
+## Rules for this knowledge base
 
-- Nur Fakten, die sich aus Code, Issues oder Entscheidungen des Eigentümers ergeben. Keine Vermutungen.
-- Ändert ein PR Verhalten, Architektur oder Entscheidungen, wird die passende Datei im selben PR angepasst.
-- Kurz halten. Details gehören in den Code, die Issues oder `docs/`.
-- Der ausführliche Konzepttext liegt als Claude-Doc beim Eigentümer; `docs/concept.md` ist die Kurzfassung.
+- Only facts that follow from the code, the issues or decisions by the owner. No guesses.
+- If a PR changes behavior, architecture or decisions, the matching file is updated in the same PR.
+- Keep it short. Details belong in the code, the issues or `docs/`.
+- `docs/concept.md` is the short form of the original design.

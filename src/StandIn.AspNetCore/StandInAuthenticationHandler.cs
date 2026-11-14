@@ -11,10 +11,10 @@ using Microsoft.Extensions.Primitives;
 namespace StandIn.AspNetCore;
 
 /// <summary>
-/// Meldet Benutzer ueber Bearer-Token oder Cookie an. Verhalten wie RimDev.Stuntman:
-/// kein Header: weiter; Header im falschen Format: 400; unbekanntes Token: 403
-/// (ausser <see cref="StandInOptions.AllowBearerTokenPassthrough"/>).
-/// 400 und 403 werden beim Challenge geschrieben, also dort, wo eine Anmeldung verlangt wird.
+/// Signs users in through bearer token or cookie. Behaves like RimDev.Stuntman:
+/// no header: continue; header in the wrong format: 400; unknown token: 403
+/// (unless <see cref="StandInOptions.AllowBearerTokenPassthrough"/>).
+/// 400 and 403 are written at challenge, i.e. where a sign-in is required.
 /// </summary>
 public sealed class StandInAuthenticationHandler : AuthenticationHandler<StandInOptions>
 {

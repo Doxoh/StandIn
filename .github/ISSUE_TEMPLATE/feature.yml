@@ -1,14 +1,14 @@
 name: Feature
-description: Neue Funktion oder Verbesserung
+description: New feature or improvement
 labels: ["enhancement"]
 body:
   - type: textarea
-    id: was
+    id: what
     attributes:
-      label: Was soll möglich sein?
+      label: What should be possible?
     validations:
       required: true
   - type: textarea
-    id: warum
+    id: why
     attributes:
-      label: Warum / Anwendungsfall
+      label: Why / use case

@@ -282,7 +282,7 @@ public class AuthenticationTests
             builder.Services.AddAuthentication().AddStandIn(builder.Environment, null, new[] { "production" }));
     }
 
-    // ---- Server und Benutzerliste ----
+    // ---- Server and user list ----
 
     [Fact]
     public async Task Server_endpoint_is_off_by_default()

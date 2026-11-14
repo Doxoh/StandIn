@@ -142,7 +142,7 @@ public class UserAndOptionsTests
     {
         Exception? reported = null;
 
-        // Port 1 ist nicht belegt: die Verbindung schlaegt sofort fehl.
+        // Port 1 is not in use: the connection fails immediately.
         new StandInOptions().TryAddConfigurationFromServer("http://127.0.0.1:1/", e => reported = e);
 
         Assert.NotNull(reported);
@@ -171,7 +171,7 @@ public class UserAndOptionsTests
         Assert.False(options.IsAllowedReturnUrl("https://localhost:5174/dashboard"));
     }
 
-    // ---- IConfiguration und Server-Konfiguration ----
+    // ---- IConfiguration and server configuration ----
 
     private static IConfiguration Configuration(params (string Key, string Value)[] values) =>
         new ConfigurationBuilder()
@@ -240,7 +240,7 @@ public class UserAndOptionsTests
     {
         Exception? reported = null;
 
-        // Erlaubt, scheitert aber am Verbindungsaufbau (Port 1) und nicht an der https-Regel.
+        // Allowed, but fails at connecting (port 1) and not at the https rule.
         new StandInOptions().TryAddConfigurationFromServer("http://localhost:1/", e => reported = e);
 
         Assert.NotNull(reported);

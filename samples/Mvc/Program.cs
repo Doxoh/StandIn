@@ -2,7 +2,7 @@ using StandIn.AspNetCore;
 
 namespace StandIn.Samples.Mvc;
 
-/// <summary>MVC mit StandIn: Cookie-Anmeldung und User Picker in der View.</summary>
+/// <summary>MVC with StandIn: cookie sign-in and user picker in the view.</summary>
 public class Program
 {
     public static void Main(string[] args)

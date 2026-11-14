@@ -1,53 +1,52 @@
-# Umsetzungskonzept StandIn
+# Implementation concept StandIn
 
-Quelle ist das Konzeptdokument in Claude Docs („Umsetzungskonzept: Stuntman-Nachfolger für ASP.NET Core“).
-Diese Datei fasst die verbindlichen Entscheidungen für die Entwicklung zusammen.
+This file summarizes the binding decisions and the original design. For the current state of the implementation see the [roadmap](../.ai/roadmap.md).
 
-## Entscheidungen
+## Decisions
 
-| Frage | Entscheidung |
+| Question | Decision |
 | --- | --- |
-| Name | StandIn, Pakete `StandIn.*` (nicht `RimDev.*`) |
+| Name | StandIn, packages `StandIn.*` (not `RimDev.*`) |
 | Frameworks | `net8.0;net10.0` |
-| Frontends | Alle .NET-Frontends und REST-APIs |
-| Pfad | `/stuntman` bleibt Standard; Weiterleitungen müssen funktionieren; `FrontendBaseUrl` für getrennte Frontends |
-| Veröffentlichung | Öffentlich auf NuGet, Präfix `StandIn` reservieren |
+| Frontends | All .NET frontends and REST APIs |
+| Path | `/stuntman` stays the default; redirects must work; `FrontendBaseUrl` for separate frontends |
+| Publishing | Public on NuGet, reserve the prefix `StandIn` |
 
-## Feature-Parität zu RimDev.Stuntman (Auszug)
+## Feature parity with RimDev.Stuntman (excerpt)
 
-- Benutzer: `AddUser` (doppelte Id → Exception); `StandInUser(id, name)`, `(name)` mit Auto-GUID,
+- Users: `AddUser` (duplicate id → exception); `StandInUser(id, name)`, `(name)` with an auto GUID,
   `(id, name, nameClaimType, roleClaimType)`; `AddClaim`, `AddName`, `AddRole`, `SetAccessToken`,
-  `SetDescription` (die Quelle setzt StandIn selbst, kein öffentliches `SetSource`)
-- Quellen: `AddUsersFromJson(pfadOderUrl, configureUsers?)`, JSON-Format `{ "Users": [ { "Id", "Name", "AccessToken", "Description", "NameClaimType", "RoleClaimType", "Claims": [ { "Type", "Value" } ] } ] }`
-- Endpunkte unter `/stuntman/`: `sign-in?OverrideUserId=&ReturnUrl=` (unbekannte Id → 404; ohne Id Login-Seite),
-  `sign-out?ReturnUrl=`, `server` (nur mit `EnableServer()`)
-- Bearer: kein Header → weiter; falsches Format → 400; unbekanntes Token → 403 (außer `AllowBearerTokenPassthrough`);
-  Treffer → Claim `access_token`
-- Schalter: `AllowCookieAuthentication`, `AllowBearerTokenAuthentication` (beide Standard an), `AllowBearerTokenPassthrough`
-- Picker: `UserPicker(principal[, returnUrl])`, Ausrichtung Left/Center/Right, Logout-Eintrag
-- Konfiguration von anderem Server: `AddConfigurationFromServer`, `TryAddConfigurationFromServer`
+  `SetDescription` (StandIn sets the source itself, there is no public `SetSource`)
+- Sources: `AddUsersFromJson(pathOrUrl, configureUsers?)`, JSON format `{ "Users": [ { "Id", "Name", "AccessToken", "Description", "NameClaimType", "RoleClaimType", "Claims": [ { "Type", "Value" } ] } ] }`
+- Endpoints under `/stuntman/`: `sign-in?OverrideUserId=&ReturnUrl=` (unknown id → 404; without an id the login page),
+  `sign-out?ReturnUrl=`, `server` (only with `EnableServer()`)
+- Bearer: no header → continue; wrong format → 400; unknown token → 403 (unless `AllowBearerTokenPassthrough`);
+  a match → claim `access_token`
+- Switches: `AllowCookieAuthentication`, `AllowBearerTokenAuthentication` (both on by default), `AllowBearerTokenPassthrough`
+- Picker: `UserPicker(principal[, returnUrl])`, alignment Left/Center/Right, logout entry
+- Configuration from another server: `AddConfigurationFromServer`, `TryAddConfigurationFromServer`
 - Hook `AfterBearerValidateIdentity`
 
-**Neu:** `POST /stuntman/token` (`EnableTokenEndpoint()`), `FrontendBaseUrl`, `AllowedReturnOrigins`, `PathBase`,
-Minimal APIs, Blazor, `StandIn.Client`, `StandIn.Testing`, Test-Header `X-Stuntman-User` (Standard aus).
+**New:** `POST /stuntman/token` (`EnableTokenEndpoint()`), `FrontendBaseUrl`, `AllowedReturnOrigins`, `PathBase`,
+Minimal APIs, Blazor, `StandIn.Client`, `StandIn.Testing`, test header `X-Stuntman-User` (off by default).
 
-## Sicherheitsregeln (verbindlich)
+## Security rules (binding)
 
-1. Aktiviert sich nur in `Development` (weitere Umgebungen nur ausdrücklich freigegeben).
-2. Start-Guard: in `Production` registriert → Exception beim Start.
-3. `ReturnUrl` nur lokal oder aus `AllowedReturnOrigins` (Original hat ein Open Redirect).
-4. Server-Endpunkt liefert im Original alle Tokens öffentlich: nur Development, Warnung im Log.
-5. Cookie `HttpOnly`, `SameSite=Lax`, enthält nur die Benutzer-Id.
-6. Test-Header standardmäßig aus.
+1. Activates itself only in `Development` (further environments only if explicitly allowed).
+2. Start guard: registered in `Production` → exception at startup.
+3. `ReturnUrl` only local or from `AllowedReturnOrigins` (the original has an open redirect).
+4. The original's server endpoint hands out all tokens publicly: Development only, warning in the log.
+5. Cookie `HttpOnly`, `SameSite=Lax`, contains only the user id.
+6. Test header off by default.
 
-## Phasen
+## Phases
 
-| Phase | Inhalt | Ergebnis |
+| Phase | Content | Result |
 | --- | --- | --- |
-| 0 | Gerüst, CI, Repo-Einrichtung | Repo bereit |
-| 1 | Handler, Store, Code-/JSON-Quellen, Cookie, Endpunkte, Guard | läuft lokal |
-| 2 | Bearer inkl. Passthrough, Picker, Login-Seite | Vorschau 0.1 |
-| 3 | Server/Client-Konfiguration, `IConfiguration`, Inject-Middleware, Test-Header, `StandIn.Testing` | Parität 0.5 |
-| 4 | `FrontendBaseUrl`, `PathBase`, Origins, 308, CORS, Token-Endpunkt, OpenAPI | 0.8 |
-| 5 | `StandIn.Blazor`, `StandIn.Client`, Beispiel-Apps | 0.9 |
-| 6 | Tests, Doku, Migrationsleitfaden, optional Analyzer | 1.0 |
+| 0 | Scaffold, CI, repo setup | repo ready |
+| 1 | Handler, store, code/JSON sources, cookie, endpoints, guard | runs locally |
+| 2 | Bearer including passthrough, picker, login page | preview 0.1 |
+| 3 | Server/client configuration, `IConfiguration`, inject middleware, test header, `StandIn.Testing` | parity 0.5 |
+| 4 | `FrontendBaseUrl`, `PathBase`, origins, 308, CORS, token endpoint, OpenAPI | 0.8 |
+| 5 | `StandIn.Blazor`, `StandIn.Client`, sample apps | 0.9 |
+| 6 | Tests, docs, migration guide, optional analyzer | 1.0 |

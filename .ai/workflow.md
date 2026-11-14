@@ -1,18 +1,18 @@
-# Arbeitsweise und GitHub
+# Way of working and GitHub
 
-- Repo `Doxoh/StandIn`, Standardbranch `main`, Änderungen nur über PRs. `CODEOWNERS`: `* @Doxoh`.
-- CI (`.github/workflows/ci.yml`): Build und Tests auf Ubuntu und Windows, .NET 8 und 10 SDK, Pack. PR gilt erst bei grüner CI als bereit.
-- Release (`release.yml`): bei Tag `v*`, Version aus MinVer (Git-Tag, Präfix `v`), Veröffentlichung per NuGet Trusted Publishing (OIDC, `NuGet/login@v1`, kurzlebiger Key), kein API-Key. Nötig: Secret `NUGET_USER` (nuget.org-Profilname) und Umgebung `nuget`.
-- Dependabot (`dependabot.yml`): Major-Updates für `Microsoft.AspNetCore.*` und `Microsoft.Extensions.*` sind ausgeschlossen, weil sie an die .NET-Version gebunden sind.
-- Issues #1 bis #16 mit Labels `phase-1` bis `phase-6`, `security`, `compat` und Meilensteinen 1 bis 6.
-- Über den Proxy der Agentenumgebung sind Repo-Einstellungen (Beschreibung, Topics) und GraphQL gesperrt; REST genügt für Issues und PRs.
+- Repo `Doxoh/StandIn`, default branch `main`, changes only through PRs. `CODEOWNERS`: `* @Doxoh`.
+- CI (`.github/workflows/ci.yml`): build and tests on Ubuntu and Windows, .NET 8 and 10 SDK, pack. A PR is ready only when CI is green.
+- Release (`release.yml`): on tag `v*`, version from MinVer (git tag, prefix `v`), published through NuGet Trusted Publishing (OIDC, `NuGet/login@v1`, short-lived key), no API key. Needs the secret `NUGET_USER` (nuget.org profile name) and the environment `nuget`.
+- Dependabot (`dependabot.yml`): major updates for `Microsoft.AspNetCore.*` and `Microsoft.Extensions.*` are excluded because they are tied to the .NET version.
+- Issues #1 to #16 with labels `phase-1` to `phase-6`, `security`, `compat` and milestones 1 to 6.
+- Through the proxy of the agent environment, repo settings (description, topics), tag pushes and GraphQL are blocked; REST is enough for issues and PRs.
 
-## Manuelle Schritte des Eigentümers
+## Manual steps of the owner
 
-Repo-Beschreibung und Topics, Branch-Schutz für `main`, Umgebung `nuget` (GitHub), Secret `NUGET_USER` (Profilname), Trusted-Publishing-Richtlinie auf nuget.org (Repo `Doxoh/StandIn`, Workflow `release.yml`, Umgebung `nuget`), NuGet-Präfix `StandIn` reservieren.
+Repo description and topics, branch protection for `main`, environment `nuget` (GitHub), secret `NUGET_USER` (profile name), Trusted Publishing policy on nuget.org (repo `Doxoh/StandIn`, workflow `release.yml`, environment `nuget`), reserve the NuGet prefix `StandIn`, push release tags.
 
-## Regeln für Agenten
+## Rules for agents
 
-- Nichts mergen, schließen, veröffentlichen oder Einstellungen ändern ohne Auftrag.
-- Vor Phase-Arbeit die zugehörigen Issues lesen und nur deren Umfang umsetzen.
-- Commits und PRs tragen die vorgegebene Attribution.
+- Do not merge, close, publish or change settings without being asked.
+- Before phase work, read the matching issues and implement only their scope.
+- Commits and PRs carry the given attribution.
