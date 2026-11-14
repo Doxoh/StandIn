@@ -1,0 +1,34 @@
+name: Release
+
+# Veroeffentlicht nur bei einem Git-Tag wie v0.1.0. Der NuGet-Key liegt als
+# Secret NUGET_API_KEY im Repo (Settings > Secrets and variables > Actions).
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: nuget   # Umgebung mit Pflicht-Freigabe einrichten
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.x
+            10.0.x
+      - run: dotnet test -c Release
+      - run: dotnet pack -c Release -o artifacts
+      - name: Auf NuGet veroeffentlichen
+        run: dotnet nuget push "artifacts/*.nupkg" --api-key "${{ secrets.NUGET_API_KEY }}" --source https://api.nuget.org/v3/index.json --skip-duplicate
+      - name: GitHub-Release anlegen
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: artifacts/*.*nupkg
+          prerelease: ${{ contains(github.ref_name, '-') }}

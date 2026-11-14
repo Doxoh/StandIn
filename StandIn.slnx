@@ -1,0 +1,17 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/StandIn.AspNetCore/StandIn.AspNetCore.csproj" />
+    <Project Path="src/StandIn.Blazor/StandIn.Blazor.csproj" />
+    <Project Path="src/StandIn.Client/StandIn.Client.csproj" />
+    <Project Path="src/StandIn.Testing/StandIn.Testing.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/StandIn.AspNetCore.Tests/StandIn.AspNetCore.Tests.csproj" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="global.json" />
+    <File Path="README.md" />
+  </Folder>
+</Solution>

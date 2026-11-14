@@ -1,0 +1,14 @@
+name: Feature
+description: Neue Funktion oder Verbesserung
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: was
+    attributes:
+      label: Was soll möglich sein?
+    validations:
+      required: true
+  - type: textarea
+    id: warum
+    attributes:
+      label: Warum / Anwendungsfall

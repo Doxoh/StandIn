@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <PackageId>StandIn.Testing</PackageId>
+    <Description>Test-Hilfen fuer StandIn: Benutzer in WebApplicationFactory- und HttpClient-basierten Integrationstests setzen.</Description>
+    <RootNamespace>StandIn.Testing</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\StandIn.AspNetCore\StandIn.AspNetCore.csproj" />
+  </ItemGroup>
+
+</Project>

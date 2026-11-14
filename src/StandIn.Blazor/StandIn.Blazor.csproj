@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <PackageId>StandIn.Blazor</PackageId>
+    <Description>StandIn fuer Blazor Server, WebAssembly, Auto und Hybrid: User-Picker-Komponente, AuthenticationStateProvider und Token-Handling.</Description>
+    <RootNamespace>StandIn.Blazor</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" />
+    <PackageReference Include="Microsoft.Extensions.Http" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <PackageId>StandIn.AspNetCore</PackageId>
+    <Description>Benutzer waehrend der Entwicklung simulieren (ASP.NET Core): Cookie-Anmeldung mit User Picker, Bearer-Token, Token-Endpunkt und Konfigurationsserver. Nachfolger von RimDev.Stuntman.</Description>
+    <RootNamespace>StandIn.AspNetCore</RootNamespace>
+    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="StandIn.AspNetCore.Tests" />
+    <InternalsVisibleTo Include="StandIn.Testing" />
+  </ItemGroup>
+
+</Project>

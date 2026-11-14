@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\StandIn.AspNetCore\StandIn.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\src\StandIn.Blazor\StandIn.Blazor.csproj" />
+    <ProjectReference Include="..\..\src\StandIn.Client\StandIn.Client.csproj" />
+    <ProjectReference Include="..\..\src\StandIn.Testing\StandIn.Testing.csproj" />
+  </ItemGroup>
+
+</Project>
