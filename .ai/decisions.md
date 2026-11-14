@@ -9,3 +9,4 @@ Verbindlich. Änderungen nur nach Rückfrage.
 5. Pfad `/stuntman` bleibt Standard, mit Weiterleitung und Option `FrontendBaseUrl`.
 6. Entwicklung startet erst nach ausdrücklicher Freigabe des Eigentümers. Nichts mergen, schließen oder veröffentlichen ohne Auftrag.
 7. Antworten und Dokumentation auf Deutsch.
+8. Kein Roslyn-Analyzer für 1.0 (keep-it-simple): der Migrationsleitfaden (`docs/migration.md`) reicht, ein Analyzer erst bei konkretem Bedarf.

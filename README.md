@@ -3,7 +3,7 @@
 Benutzer während der Entwicklung simulieren: ein gepflegter Nachfolger von
 [RimDev.Stuntman](https://github.com/ritterim/stuntman) für ASP.NET Core ab .NET 8.
 
-> Status: in Entwicklung (Phase 1 bis 4 umgesetzt, Stand siehe `.ai/roadmap.md`). Noch nicht auf NuGet veröffentlicht.
+> Status: Funktionsumfang komplett (Phase 1 bis 5), Release-Vorbereitung läuft. Noch nicht auf NuGet veröffentlicht.
 
 ## Pakete
 
@@ -17,7 +17,7 @@ Benutzer während der Entwicklung simulieren: ein gepflegter Nachfolger von
 Ziel-Frameworks: `net8.0` und `net10.0`. .NET 8 und 9 sind seit dem 10.11.2026 nicht mehr
 von Microsoft unterstützt, `net8.0` bleibt für Bestandsprojekte im Paket.
 
-## Schnellstart (Zielbild)
+## Schnellstart
 
 ```csharp
 builder.Services.AddAuthentication().AddStandIn(builder.Environment, options =>
@@ -31,7 +31,20 @@ app.UseAuthorization();
 app.MapStandIn();
 ```
 
-`AddStandIn` registriert nur in der Umgebung `Development`. Details: [docs/concept.md](docs/concept.md).
+In Views (MVC, Razor Pages) steht der User Picker mit `@Html.StandInUserPicker()` bereit; `app.UseStandInPicker()` blendet ihn zusätzlich in jede HTML-Seite ein.
+
+`AddStandIn` ist nur in `Development` aktiv. In allen anderen Umgebungen tut es nichts, in `Production` lässt es sich nicht einschalten. Die Endpunkte liegen unter `/stuntman`.
+
+## Wohin als Nächstes
+
+| Ich will ... | Lesen |
+| --- | --- |
+| von RimDev.Stuntman wechseln | [docs/migration.md](docs/migration.md) |
+| eine REST-API per Bearer-Token testen | [samples/MinimalApi](samples/MinimalApi) |
+| MVC mit Cookie und Picker | [samples/Mvc](samples/Mvc) |
+| einen Client (MAUI, WPF, Blazor WASM) gegen die API anmelden | `StandIn.Client`, `AddStandInClient`; Blazor: `AddStandInBlazor` |
+| Integrationstests als bestimmter Benutzer | `factory.CreateStandInClient("admin")` aus `StandIn.Testing` |
+| Sicherheitsregeln und Entwurf | [docs/concept.md](docs/concept.md) |
 
 ## Lizenz
 

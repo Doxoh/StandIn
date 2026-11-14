@@ -17,7 +17,7 @@ Diese Datei fasst die verbindlichen Entscheidungen für die Entwicklung zusammen
 
 - Benutzer: `AddUser` (doppelte Id → Exception); `StandInUser(id, name)`, `(name)` mit Auto-GUID,
   `(id, name, nameClaimType, roleClaimType)`; `AddClaim`, `AddName`, `AddRole`, `SetAccessToken`,
-  `SetDescription`, `SetSource`
+  `SetDescription` (die Quelle setzt StandIn selbst, kein öffentliches `SetSource`)
 - Quellen: `AddUsersFromJson(pfadOderUrl, configureUsers?)`, JSON-Format `{ "Users": [ { "Id", "Name", "AccessToken", "Description", "NameClaimType", "RoleClaimType", "Claims": [ { "Type", "Value" } ] } ] }`
 - Endpunkte unter `/stuntman/`: `sign-in?OverrideUserId=&ReturnUrl=` (unbekannte Id → 404; ohne Id Login-Seite),
   `sign-out?ReturnUrl=`, `server` (nur mit `EnableServer()`)
