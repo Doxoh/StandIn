@@ -1,16 +1,16 @@
-name: Fehler
-description: Etwas funktioniert nicht wie erwartet
+name: Bug
+description: Something does not work as expected
 labels: ["bug"]
 body:
   - type: input
     id: version
     attributes:
-      label: StandIn-Version und .NET-Version
+      label: StandIn version and .NET version
     validations:
       required: true
   - type: textarea
-    id: schritte
+    id: steps
     attributes:
-      label: Schritte zum Nachstellen
+      label: Steps to reproduce
     validations:
       required: true

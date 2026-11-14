@@ -1,14 +1,14 @@
-# Sicherheitsregeln
+# Security rules
 
-Diese Regeln nie aufweichen. Jede Änderung braucht Tests.
+Never relax these rules. Every change needs tests.
 
-1. **Nur Development.** Aktiv nur in `Development` oder in ausdrücklich freigegebenen Zusatzumgebungen. In allen anderen Umgebungen sind `AddStandIn` und `MapStandIn` stille No-ops.
-2. **Production nie.** `additionalEnvironments` mit `Production` wirft `ArgumentException`.
-3. **ReturnUrl nur lokal.** Erlaubt sind lokale Pfade; `//host` und `/\host` sind abgelehnt. Fremde Ziele nur über `AddAllowedReturnOrigin`. Referer-Fallback wird bei gleichem Host zu einem lokalen Pfad.
-4. **Cookie:** HttpOnly, SameSite=Lax, enthält nur die Benutzer-Id.
-5. **Tokens:** `/server` liefert Tokens aus (wie das Original), deshalb nur mit `EnableServer()` und nur in Development. `/users` gibt nie Tokens aus.
-6. Neue Endpunkte, Parameter und Rückleitungen werden wie Eingaben nicht vertrauenswürdiger Clients behandelt.
-7. **Token-Endpunkt:** nur mit `EnableTokenEndpoint()` und nur in Development; nur JSON (ein fremdes Formular kann ihn nicht anstoßen, CORS verlangt Preflight); Log-Warnung.
-8. **CORS** nur für ausdrücklich freigegebene Origins und nur für `users` und `token`, nie für `server`.
-9. **308-Weiterleitung** des alten Root-Pfads führt nie aus der Anwendung heraus.
-10. `AddConfigurationFromServer`: nur https, http nur für localhost (die Antwort enthält Tokens).
+1. **Development only.** Active only in `Development` or in explicitly allowed additional environments. In all other environments `AddStandIn` and `MapStandIn` are silent no-ops.
+2. **Never Production.** `additionalEnvironments` containing `Production` throws `ArgumentException`.
+3. **ReturnUrl local only.** Local paths are allowed; `//host` and `/\host` are rejected. Foreign targets only through `AddAllowedReturnOrigin`. The referer fallback becomes a local path when the host is the same.
+4. **Cookie:** HttpOnly, SameSite=Lax, contains only the user id.
+5. **Tokens:** `/server` hands out tokens (like the original), so only with `EnableServer()` and only in Development. `/users` never hands out tokens.
+6. New endpoints, parameters and redirects are treated like input from untrusted clients.
+7. **Token endpoint:** only with `EnableTokenEndpoint()` and only in Development; JSON only (a foreign form cannot trigger it, CORS requires a preflight); log warning.
+8. **CORS** only for explicitly allowed origins and only for `users` and `token`, never for `server`.
+9. The **308 redirect** of the old root path never leaves the application.
+10. `AddConfigurationFromServer`: https only, http only for localhost (the response contains tokens).

@@ -8,8 +8,8 @@ using StandIn.Client;
 namespace StandIn.Blazor;
 
 /// <summary>
-/// Liefert den in <see cref="StandInSession"/> angemeldeten Benutzer als <see cref="AuthenticationState"/>
-/// (Blazor WebAssembly, Auto, Hybrid). Wechselt der Benutzer, werden die Komponenten benachrichtigt.
+/// Provides the user signed in through <see cref="StandInSession"/> as <see cref="AuthenticationState"/>
+/// (Blazor WebAssembly, Auto, Hybrid). When the user changes, components are notified.
 /// </summary>
 public sealed class StandInAuthenticationStateProvider : AuthenticationStateProvider, IDisposable
 {
@@ -25,7 +25,7 @@ public sealed class StandInAuthenticationStateProvider : AuthenticationStateProv
 
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
-        // Meldet beim ersten Aufruf den Start-Benutzer an (StandInClientOptions.UserId).
+        // Signs in the start user on the first call (StandInClientOptions.UserId).
         await _session.GetAccessTokenAsync();
 
         return new AuthenticationState(ToPrincipal(_session.Current));

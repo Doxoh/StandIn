@@ -22,7 +22,7 @@ public class ClientTests
     private static StandInSession Session(TestApp app, string? userId = null) =>
         new(app.Client, new StandInClientOptions { UserId = userId });
 
-    /// <summary>Ein Client, der ueber den Token-Handler an die Test-Anwendung sendet.</summary>
+    /// <summary>A client that sends to the test application through the token handler.</summary>
     private static HttpClient Api(TestApp app, StandInSession session) =>
         new(new StandInTokenHandler(session) { InnerHandler = app.App.GetTestServer().CreateHandler() })
         {
@@ -143,7 +143,7 @@ public class ClientTests
 
         using var response = await api.SendAsync(request);
 
-        // Das unbekannte Token gehoert dem Aufrufer: StandIn antwortet mit 403 und ersetzt es nicht.
+        // The unknown token belongs to the caller: StandIn answers 403 and does not replace it.
         Assert.Equal(System.Net.HttpStatusCode.Forbidden, response.StatusCode);
     }
 

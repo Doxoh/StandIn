@@ -11,8 +11,8 @@ using System.Threading.Tasks;
 namespace StandIn.Client;
 
 /// <summary>
-/// Merkt sich, als welcher Benutzer der Client auftritt, und holt dessen Bearer-Token vom StandIn-Server.
-/// Eine Instanz pro Anwendung (Singleton).
+/// Remembers which user the client acts as and fetches that user's bearer token from the StandIn server.
+/// One instance per application (singleton).
 /// </summary>
 public sealed class StandInSession
 {
@@ -24,8 +24,8 @@ public sealed class StandInSession
     private readonly SemaphoreSlim _lock = new(1, 1);
     private bool _initialized;
 
-    /// <param name="http">Client mit <c>BaseAddress</c> des Servers.</param>
-    /// <param name="options">Root-Pfad und Start-Benutzer.</param>
+    /// <param name="http">Client with the server's <c>BaseAddress</c>.</param>
+    /// <param name="options">Root path and start user.</param>
     public StandInSession(HttpClient http, StandInClientOptions options)
     {
         ArgumentNullException.ThrowIfNull(http);
@@ -36,10 +36,10 @@ public sealed class StandInSession
         _initialUserId = options.UserId;
     }
 
-    /// <summary>Der angemeldete Benutzer, oder <c>null</c> (anonym).</summary>
+    /// <summary>The signed-in user, or <c>null</c> (anonymous).</summary>
     public StandInToken? Current { get; private set; }
 
-    /// <summary>Wird ausgeloest, wenn sich <see cref="Current"/> aendert.</summary>
+    /// <summary>Raised when <see cref="Current"/> changes.</summary>
     public event Action? Changed;
 
     public async Task<IReadOnlyList<StandInUserInfo>> GetUsersAsync(CancellationToken cancellationToken = default)
@@ -51,7 +51,7 @@ public sealed class StandInSession
             .ToList();
     }
 
-    /// <summary>Meldet den Benutzer an: holt sein Token vom Token-Endpunkt (<c>EnableTokenEndpoint()</c> auf dem Server).</summary>
+    /// <summary>Signs the user in: fetches the token from the token endpoint (<c>EnableTokenEndpoint()</c> on the server).</summary>
     public async Task SignInAsync(string userId, CancellationToken cancellationToken = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(userId);
@@ -82,7 +82,7 @@ public sealed class StandInSession
         Changed?.Invoke();
     }
 
-    /// <summary>Das Bearer-Token des angemeldeten Benutzers; meldet beim ersten Aufruf den Start-Benutzer an.</summary>
+    /// <summary>The bearer token of the signed-in user; signs in the start user on the first call.</summary>
     public async ValueTask<string?> GetAccessTokenAsync(CancellationToken cancellationToken = default)
     {
         if (!_initialized)

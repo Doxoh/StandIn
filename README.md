@@ -1,20 +1,20 @@
 # StandIn
 
-Benutzer während der Entwicklung simulieren: ein gepflegter Nachfolger von
-[RimDev.Stuntman](https://github.com/ritterim/stuntman) für ASP.NET Core ab .NET 8.
+Simulate users during development: a maintained successor of
+[RimDev.Stuntman](https://github.com/ritterim/stuntman) for ASP.NET Core on .NET 8 and later.
 
 [![CI](https://github.com/Doxoh/StandIn/actions/workflows/ci.yml/badge.svg)](https://github.com/Doxoh/StandIn/actions/workflows/ci.yml)
 [![NuGet](https://img.shields.io/nuget/vpre/StandIn.AspNetCore.svg)](https://www.nuget.org/packages/StandIn.AspNetCore)
-[![Lizenz: MIT](https://img.shields.io/badge/Lizenz-MIT-blue.svg)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-Mit StandIn meldest du dich in deiner Entwicklungsumgebung per Klick als beliebiger Testbenutzer an, ohne Identity Provider.
-Cookie-Anmeldung mit User Picker für MVC, Razor Pages und Blazor Server, Bearer-Token für REST-APIs, ein Token-Endpunkt für Clients
-(Blazor WebAssembly, MAUI, WPF, Konsole) und Hilfen für Integrationstests.
+With StandIn you sign in to your development environment as any test user with one click, without an identity provider.
+It offers cookie sign-in with a user picker for MVC, Razor Pages and Blazor Server, bearer tokens for REST APIs, a token endpoint for clients
+(Blazor WebAssembly, MAUI, WPF, console) and helpers for integration tests.
 
-> **Nur für die Entwicklung.** StandIn schaltet sich nur in `Development` ein und lässt sich in `Production` nicht aktivieren.
-> Es ersetzt keine echte Authentifizierung. Details: [SECURITY.md](SECURITY.md).
+> **For development only.** StandIn switches itself on only in `Development` and cannot be activated in `Production`.
+> It does not replace real authentication. Details: [SECURITY.md](SECURITY.md).
 
-> Status: Vorschau (0.x), der Funktionsumfang entspricht RimDev.Stuntman plus Erweiterungen. Die API kann sich bis 1.0 noch ändern.
+> Status: preview (0.x). The feature set matches RimDev.Stuntman plus extensions. The API may still change before 1.0.
 
 ## Installation
 
@@ -22,16 +22,16 @@ Cookie-Anmeldung mit User Picker für MVC, Razor Pages und Blazor Server, Bearer
 dotnet add package StandIn.AspNetCore --prerelease
 ```
 
-| Paket | Zweck |
+| Package | Purpose |
 | --- | --- |
-| `StandIn.AspNetCore` | Handler, Benutzerquellen, Endpunkte, User Picker für MVC/Razor Pages/Blazor Server, Token-Endpunkt |
-| `StandIn.Blazor` | Picker-Komponente und `AuthenticationStateProvider` für WebAssembly, Hybrid und Auto-WASM |
-| `StandIn.Client` | `HttpClient`-Handler für MAUI, WPF, WinForms, Konsole, Worker |
-| `StandIn.Testing` | Hilfen für `WebApplicationFactory`-Integrationstests |
+| `StandIn.AspNetCore` | Handler, user sources, endpoints, user picker for MVC/Razor Pages/Blazor Server, token endpoint |
+| `StandIn.Blazor` | Picker component and `AuthenticationStateProvider` for WebAssembly, Hybrid and Auto-WASM |
+| `StandIn.Client` | `HttpClient` handler for MAUI, WPF, WinForms, console, worker |
+| `StandIn.Testing` | Helpers for `WebApplicationFactory` integration tests |
 
-Ziel-Frameworks: `net8.0` und `net10.0`. `net8.0` bleibt für Bestandsprojekte im Paket, auch wenn Microsoft den Support beendet hat.
+Target frameworks: `net8.0` and `net10.0`. `net8.0` stays in the packages for existing projects, even though Microsoft has ended its support.
 
-## Schnellstart
+## Quick start
 
 ```csharp
 builder.Services.AddAuthentication().AddStandIn(builder.Environment, options =>
@@ -45,33 +45,33 @@ app.UseAuthorization();
 app.MapStandIn();
 ```
 
-Den User Picker bekommst du so:
+You get the user picker like this:
 
-- MVC und Razor Pages: `@Html.StandInUserPicker()` in der View.
-- Blazor Server und beliebige HTML-Seiten: `app.UseStandInPicker()` blendet ihn in jede Seite ein.
-- Blazor WebAssembly, Hybrid, Auto-WASM: `<StandInPicker />` aus `StandIn.Blazor`.
+- MVC and Razor Pages: `@Html.StandInUserPicker()` in the view.
+- Blazor Server and any HTML page: `app.UseStandInPicker()` inserts it into every page.
+- Blazor WebAssembly, Hybrid, Auto-WASM: `<StandInPicker />` from `StandIn.Blazor`.
 
-Position und Ausrichtung stellst du mit `SetUserPickerAlignment` und `SetUserPickerVerticalPosition` ein.
+Set position and alignment with `SetUserPickerAlignment` and `SetUserPickerVerticalPosition`.
 
-`AddStandIn` ist nur in `Development` aktiv. In allen anderen Umgebungen tut es nichts, in `Production` lässt es sich nicht einschalten. Die Endpunkte liegen unter `/stuntman`.
+`AddStandIn` is active only in `Development`. In all other environments it does nothing, and it cannot be switched on in `Production`. The endpoints live under `/stuntman`.
 
-## Wohin als Nächstes
+## Where to go next
 
-| Ich will ... | Lesen |
+| I want to ... | Read |
 | --- | --- |
-| von RimDev.Stuntman wechseln | [docs/migration.md](docs/migration.md) |
-| eine REST-API per Bearer-Token testen | [samples/MinimalApi](samples/MinimalApi) |
-| MVC mit Cookie und Picker | [samples/Mvc](samples/Mvc) |
-| einen Client (MAUI, WPF, Blazor WASM) gegen die API anmelden | `StandIn.Client`, `AddStandInClient`; Blazor: `AddStandInBlazor` |
-| Integrationstests als bestimmter Benutzer | `factory.CreateStandInClient("admin")` aus `StandIn.Testing` |
-| Sicherheitsregeln und Entwurf | [docs/concept.md](docs/concept.md) |
+| switch from RimDev.Stuntman | [docs/migration.md](docs/migration.md) |
+| test a REST API with a bearer token | [samples/MinimalApi](samples/MinimalApi) |
+| MVC with cookie and picker | [samples/Mvc](samples/Mvc) |
+| sign a client (MAUI, WPF, Blazor WASM) in to the API | `StandIn.Client`, `AddStandInClient`; Blazor: `AddStandInBlazor` |
+| run integration tests as a specific user | `factory.CreateStandInClient("admin")` from `StandIn.Testing` |
+| security rules and design | [docs/concept.md](docs/concept.md) |
 
-## Mitmachen
+## Contributing
 
-Fehler und Wünsche bitte als [Issue](https://github.com/Doxoh/StandIn/issues) melden, Änderungen als Pull Request (siehe [CONTRIBUTING.md](CONTRIBUTING.md)).
-Sicherheitslücken bitte nicht öffentlich melden, sondern wie in [SECURITY.md](SECURITY.md) beschrieben.
+Please report bugs and ideas as an [issue](https://github.com/Doxoh/StandIn/issues) and send changes as a pull request (see [CONTRIBUTING.md](CONTRIBUTING.md)).
+Please do not report security vulnerabilities in public, but as described in [SECURITY.md](SECURITY.md).
 
-## Lizenz
+## License
 
-MIT. Teile basieren auf RimDev.Stuntman (MIT, © 2018 Ritter Insurance Marketing),
-siehe [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
+MIT. Parts are based on RimDev.Stuntman (MIT, © 2018 Ritter Insurance Marketing),
+see [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).

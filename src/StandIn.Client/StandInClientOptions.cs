@@ -4,12 +4,12 @@ namespace StandIn.Client;
 
 public sealed class StandInClientOptions
 {
-    /// <summary>Adresse der API, auf der StandIn laeuft, z. B. "https://localhost:5001/". Pflicht.</summary>
+    /// <summary>Address of the API that runs StandIn, e.g. "https://localhost:5001/". Required.</summary>
     public Uri? ServerAddress { get; set; }
 
-    /// <summary>Root-Pfad von StandIn auf dem Server, Standard "/stuntman".</summary>
+    /// <summary>Root path of StandIn on the server, default "/stuntman".</summary>
     public string RootPath { get; set; } = "/stuntman";
 
-    /// <summary>Benutzer, mit dem sich der Client beim ersten Zugriff anmeldet. Ohne Angabe bleibt er anonym.</summary>
+    /// <summary>User the client signs in as on first access. Without a value it stays anonymous.</summary>
     public string? UserId { get; set; }
 }

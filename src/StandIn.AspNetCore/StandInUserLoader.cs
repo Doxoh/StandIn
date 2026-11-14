@@ -8,7 +8,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace StandIn.AspNetCore;
 
-/// <summary>Liest und schreibt das Stuntman-JSON-Format: { "Users": [ { "Id", "Name", ... } ] }.</summary>
+/// <summary>Reads and writes the Stuntman JSON format: { "Users": [ { "Id", "Name", ... } ] }.</summary>
 internal static class StandInUserLoader
 {
     private static readonly JsonSerializerOptions ReadOptions = new()
@@ -18,7 +18,7 @@ internal static class StandInUserLoader
         AllowTrailingCommas = true,
     };
 
-    /// <summary>PascalCase wie bei Stuntman, damit Server und Clients unterschiedlicher Versionen zusammenarbeiten.</summary>
+    /// <summary>PascalCase like Stuntman, so servers and clients of different versions work together.</summary>
     internal static readonly JsonSerializerOptions WriteOptions = new()
     {
         PropertyNamingPolicy = null,
@@ -27,14 +27,14 @@ internal static class StandInUserLoader
 
     private static readonly HttpClient Http = new() { Timeout = TimeSpan.FromSeconds(10) };
 
-    /// <summary>Liest Text aus einer Datei (absolut oder relativ zum Arbeitsverzeichnis) oder einer http(s)-URL.</summary>
+    /// <summary>Reads text from a file (absolute or relative to the working directory) or an http(s) URL.</summary>
     public static string ReadText(string pathOrUrl)
     {
         if (Uri.TryCreate(pathOrUrl, UriKind.Absolute, out var uri))
         {
             if (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps)
             {
-                // Beim Start einmalig; synchron, damit die Optionen-API wie bei Stuntman fluent bleibt.
+                // Once at startup; synchronous so the options API stays fluent like Stuntman's.
                 return Http.GetStringAsync(uri).GetAwaiter().GetResult();
             }
 
@@ -55,7 +55,7 @@ internal static class StandInUserLoader
         return ToUsers(document);
     }
 
-    /// <summary>Liest dieselbe Struktur wie das JSON ({ "Users": [ ... ] }) aus einem Konfigurationsabschnitt.</summary>
+    /// <summary>Reads the same structure as the JSON ({ "Users": [ ... ] }) from a configuration section.</summary>
     public static IReadOnlyList<StandInUser> FromConfiguration(IConfiguration configuration)
     {
         return ToUsers(configuration.Get<UsersDocument>() ?? new UsersDocument());

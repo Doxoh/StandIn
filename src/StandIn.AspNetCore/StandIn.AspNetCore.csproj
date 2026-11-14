@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <PackageId>StandIn.AspNetCore</PackageId>
-    <Description>Benutzer waehrend der Entwicklung simulieren (ASP.NET Core): Cookie-Anmeldung mit User Picker, Bearer-Token, Token-Endpunkt und Konfigurationsserver. Nachfolger von RimDev.Stuntman.</Description>
+    <Description>Simulate users during development (ASP.NET Core): cookie sign-in with a user picker, bearer tokens, token endpoint and configuration server. Successor of RimDev.Stuntman.</Description>
     <RootNamespace>StandIn.AspNetCore</RootNamespace>
   </PropertyGroup>
 

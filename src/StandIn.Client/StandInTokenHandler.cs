@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace StandIn.Client;
 
-/// <summary>Haengt das Bearer-Token des angemeldeten StandIn-Benutzers an ausgehende Anfragen. Ein vorhandener Authorization-Header bleibt unveraendert.</summary>
+/// <summary>Attaches the bearer token of the signed-in StandIn user to outgoing requests. An existing Authorization header is left unchanged.</summary>
 public sealed class StandInTokenHandler : DelegatingHandler
 {
     private readonly StandInSession _session;

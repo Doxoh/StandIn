@@ -10,8 +10,8 @@ namespace StandIn.AspNetCore;
 public static class StandInApplicationBuilderExtensions
 {
     /// <summary>
-    /// Blendet den User Picker automatisch vor <c>&lt;/body&gt;</c> in HTML-Seiten ein (nur GET-Anfragen, die HTML
-    /// erwarten). Nach <c>UseAuthentication()</c> einsetzen. Ist StandIn in dieser Umgebung nicht aktiv, passiert nichts.
+    /// Inserts the user picker automatically before <c>&lt;/body&gt;</c> in HTML pages (only GET requests that expect HTML).
+    /// Add it after <c>UseAuthentication()</c>. If StandIn is not active in this environment, nothing happens.
     /// </summary>
     public static IApplicationBuilder UseStandInPicker(this IApplicationBuilder app)
     {
@@ -32,7 +32,7 @@ public static class StandInApplicationBuilderExtensions
                 return;
             }
 
-            // Die Antwort wird zwischengespeichert, weil der Picker in den fertigen HTML-Text eingefuegt wird.
+            // The response is buffered because the picker is inserted into the finished HTML text.
             var original = context.Response.Body;
             using var buffer = new MemoryStream();
             context.Response.Body = buffer;

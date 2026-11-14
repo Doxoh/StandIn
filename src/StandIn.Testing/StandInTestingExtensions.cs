@@ -7,11 +7,11 @@ using StandIn.AspNetCore;
 
 namespace StandIn.Testing;
 
-/// <summary>Hilfen fuer Integrationstests: Anfragen als StandIn-Benutzer senden.</summary>
+/// <summary>Helpers for integration tests: send requests as a StandIn user.</summary>
 public static class StandInTestingExtensions
 {
     /// <summary>
-    /// Schaltet den Test-Header ein, z. B. in <c>factory.WithWebHostBuilder(b =&gt; b.ConfigureTestServices(s =&gt; s.AllowStandInTestHeader()))</c>.
+    /// Turns the test header on, e.g. in <c>factory.WithWebHostBuilder(b =&gt; b.ConfigureTestServices(s =&gt; s.AllowStandInTestHeader()))</c>.
     /// </summary>
     public static IServiceCollection AllowStandInTestHeader(this IServiceCollection services)
     {
@@ -22,7 +22,7 @@ public static class StandInTestingExtensions
             options => options.AllowTestHeader = true);
     }
 
-    /// <summary>Ein Client der <see cref="WebApplicationFactory{TEntryPoint}"/>, dessen Anfragen als Benutzer <paramref name="userId"/> gelten.</summary>
+    /// <summary>A client of the <see cref="WebApplicationFactory{TEntryPoint}"/> whose requests count as user <paramref name="userId"/>.</summary>
     public static HttpClient CreateStandInClient<TEntryPoint>(this WebApplicationFactory<TEntryPoint> factory, string userId)
         where TEntryPoint : class
     {
@@ -34,7 +34,7 @@ public static class StandInTestingExtensions
             .AsStandInUser(userId);
     }
 
-    /// <summary>Alle Anfragen dieses Clients gelten als Benutzer <paramref name="userId"/>.</summary>
+    /// <summary>All requests of this client count as user <paramref name="userId"/>.</summary>
     public static HttpClient AsStandInUser(this HttpClient client, string userId)
     {
         ArgumentNullException.ThrowIfNull(client);

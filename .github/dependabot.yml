@@ -4,8 +4,8 @@ updates:
     directory: "/"
     schedule:
       interval: weekly
-    # Framework-Pakete folgen dem jeweiligen Ziel-Framework (net8.0 -> 8.x, net10.0 -> 10.x).
-    # Hauptversionen werden deshalb nicht automatisch angehoben, nur Patches und Minors.
+    # Framework packages follow the respective target framework (net8.0 -> 8.x, net10.0 -> 10.x).
+    # Major versions are therefore not bumped automatically, only patches and minors.
     ignore:
       - dependency-name: "Microsoft.AspNetCore.*"
         update-types: ["version-update:semver-major"]

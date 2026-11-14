@@ -17,7 +17,7 @@ public class MvcSampleTests : IClassFixture<WebApplicationFactory<Program>>
         _factory = factory;
     }
 
-    /// <summary>Wie ein Browser: erwartet HTML, folgt keinen Weiterleitungen von selbst, merkt sich Cookies.</summary>
+    /// <summary>Like a browser: expects HTML, does not follow redirects on its own, keeps cookies.</summary>
     private static HttpClient Browser(WebApplicationFactory<Program> factory)
     {
         var client = factory.CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false });

@@ -1,3 +1,3 @@
 # StandIn
 
-Lies zuerst `.ai/README.md` (Projektwissen, Entscheidungen, Sicherheitsregeln). Halte `.ai/` bei Änderungen aktuell.
+Read `.ai/README.md` first (project knowledge, decisions, security rules). Keep `.ai/` up to date when you change things.

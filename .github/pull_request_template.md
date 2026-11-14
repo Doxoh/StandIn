@@ -1,10 +1,10 @@
-## Was ändert sich?
+## What changes?
 
-## Bezug
+## Reference
 Closes #
 
-## Checkliste
-- [ ] Tests ergänzt oder angepasst
-- [ ] Verhalten bleibt kompatibel zu RimDev.Stuntman (oder Abweichung ist begründet)
-- [ ] Sicherheitsregeln aus `docs/concept.md` eingehalten (nur Development, lokale Redirects)
-- [ ] README/Doku aktualisiert
+## Checklist
+- [ ] Tests added or adjusted
+- [ ] Behavior stays compatible with RimDev.Stuntman (or the deviation is justified)
+- [ ] Security rules from `.ai/security.md` followed (Development only, local redirects)
+- [ ] README/docs updated

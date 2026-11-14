@@ -14,7 +14,7 @@
   <!-- NuGet-Metadaten (gelten fuer alle Pakete unter src/) -->
   <PropertyGroup>
     <Authors>Till Schreiber</Authors>
-    <Copyright>Copyright (c) Till Schreiber. Teile basieren auf RimDev.Stuntman, Copyright (c) 2018 Ritter Insurance Marketing.</Copyright>
+    <Copyright>Copyright (c) Till Schreiber. Parts are based on RimDev.Stuntman, Copyright (c) 2018 Ritter Insurance Marketing.</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/Doxoh/StandIn</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Doxoh/StandIn</RepositoryUrl>

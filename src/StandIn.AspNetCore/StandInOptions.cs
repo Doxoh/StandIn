@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace StandIn.AspNetCore;
 
-/// <summary>Optionen fuer StandIn. API-Namen folgen RimDev.Stuntman (StuntmanOptions).</summary>
+/// <summary>Options for StandIn. API names follow RimDev.Stuntman (StuntmanOptions).</summary>
 public sealed class StandInOptions : AuthenticationSchemeOptions
 {
     private readonly List<StandInUser> _users = new();
@@ -15,7 +15,7 @@ public sealed class StandInOptions : AuthenticationSchemeOptions
     private string _rootPath = StandInDefaults.DefaultRootPath;
     private string? _frontendBaseUrl;
 
-    /// <summary>Basispfad der StandIn-Endpunkte, Standard "/stuntman" (ohne abschliessenden Schraegstrich).</summary>
+    /// <summary>Base path of the StandIn endpoints, default "/stuntman" (without a trailing slash).</summary>
     public string RootPath
     {
         get => _rootPath;
@@ -30,28 +30,28 @@ public sealed class StandInOptions : AuthenticationSchemeOptions
 
     public string UsersPath => RootPath + "/users";
 
-    /// <summary>Cookie-Anmeldung und Login-Seite (Standard: an).</summary>
+    /// <summary>Cookie sign-in and login page (default: on).</summary>
     public bool AllowCookieAuthentication { get; set; } = true;
 
-    /// <summary>Bearer-Token-Anmeldung (Standard: an).</summary>
+    /// <summary>Bearer token sign-in (default: on).</summary>
     public bool AllowBearerTokenAuthentication { get; set; } = true;
 
     /// <summary>
-    /// Ein Bearer-Token ohne passenden StandIn-Benutzer fuehrt nicht zu 403, sondern wird an andere
-    /// Authentifizierungsverfahren weitergereicht (z. B. echtes JWT neben StandIn).
+    /// A bearer token without a matching StandIn user does not lead to 403 but is passed on to other
+    /// authentication handlers (e.g. a real JWT next to StandIn).
     /// </summary>
     public bool AllowBearerTokenPassthrough { get; set; }
 
     /// <summary>
-    /// Test-Header <c>X-Stuntman-User: &lt;Id&gt;</c> (Standard: aus). Achtung: ohne Anmeldung gilt jeder Benutzer,
-    /// deshalb nur in Tests einschalten.
+    /// Test header <c>X-Stuntman-User: &lt;Id&gt;</c> (default: off). Caution: without a sign-in any user counts,
+    /// so turn it on in tests only.
     /// </summary>
     public bool AllowTestHeader { get; set; }
 
     /// <summary>
-    /// Adresse des Frontends, wenn Frontend und API getrennt laufen (z. B. "https://localhost:5173/"). Dorthin geht der
-    /// Rücksprung nach Anmelden/Abmelden, wenn weder ReturnUrl noch Referer vorliegen. Die Origin gilt automatisch
-    /// als freigegeben (Rücksprung und CORS).
+    /// Address of the frontend when frontend and API run separately (e.g. "https://localhost:5173/"). The
+    /// return redirect after sign-in/sign-out goes there when neither ReturnUrl nor Referer is present.
+    /// Its origin counts automatically as allowed (return redirect and CORS).
     /// </summary>
     public string? FrontendBaseUrl
     {
@@ -67,26 +67,26 @@ public sealed class StandInOptions : AuthenticationSchemeOptions
         }
     }
 
-    /// <summary>Ist <c>POST {RootPath}/token</c> aktiv? Achtung: er gibt ohne Anmeldung ein Bearer-Token für jeden Benutzer aus.</summary>
+    /// <summary>Is <c>POST {RootPath}/token</c> active? Caution: it hands out a bearer token for any user without a sign-in.</summary>
     public bool TokenEndpointEnabled { get; private set; }
 
     public StandInAlignment UserPickerAlignment { get; private set; }
 
     public StandInVerticalPosition UserPickerVerticalPosition { get; private set; }
 
-    /// <summary>Ist der Server-Endpunkt aktiv? Achtung: er liefert alle Access Tokens ohne Anmeldung aus.</summary>
+    /// <summary>Is the server endpoint active? Caution: it hands out all access tokens without a sign-in.</summary>
     public bool ServerEnabled { get; private set; }
 
     public IReadOnlyList<StandInUser> Users => _users;
 
-    /// <summary>Hook nach erfolgreicher Bearer-Anmeldung (z. B. fuer Tests).</summary>
+    /// <summary>Hook after a successful bearer sign-in (e.g. for tests).</summary>
     public Action<HttpContext, StandInUser>? AfterBearerValidateIdentity { get; set; }
 
-    /// <summary>Fuegt einen Benutzer hinzu. Die Id muss eindeutig sein.</summary>
+    /// <summary>Adds a user. The id must be unique.</summary>
     public StandInOptions AddUser(StandInUser user) => AddUser(user, StandInDefaults.LocalSource);
 
     /// <summary>
-    /// Fuegt Benutzer aus einer JSON-Datei oder http(s)-URL hinzu.
+    /// Adds users from a JSON file or http(s) URL.
     /// Format: { "Users": [ { "Id": "user-1", "Name": "User 1" } ] }
     /// </summary>
     public StandInOptions AddUsersFromJson(string pathOrUrl, Action<StandInUser>? configureUsers = null)
@@ -103,8 +103,8 @@ public sealed class StandInOptions : AuthenticationSchemeOptions
     }
 
     /// <summary>
-    /// Fuegt Benutzer aus einem Konfigurationsabschnitt hinzu, z. B. <c>GetSection("StandIn")</c> mit
-    /// <c>Users:0:Id</c>, <c>Users:0:Name</c>, ... (gleiche Struktur wie die JSON-Datei).
+    /// Adds users from a configuration section, e.g. <c>GetSection("StandIn")</c> with
+    /// <c>Users:0:Id</c>, <c>Users:0:Name</c>, ... (same structure as the JSON file).
     /// </summary>
     public StandInOptions AddUsersFromConfiguration(IConfiguration configuration, Action<StandInUser>? configureUsers = null)
     {
@@ -120,11 +120,11 @@ public sealed class StandInOptions : AuthenticationSchemeOptions
     }
 
     /// <summary>
-    /// Laedt Benutzer von einer anderen StandIn-Anwendung mit aktivem Server-Endpunkt.
-    /// Fehler werden geworfen. Erlaubt ist https; http nur fuer localhost, weil die Antwort Access Tokens enthaelt.
+    /// Loads users from another StandIn application with an active server endpoint.
+    /// Errors are thrown. https is allowed; http only for localhost, because the response contains access tokens.
     /// </summary>
-    /// <param name="serverBaseUrl">Basis-URL der Server-Anwendung, z. B. https://auth.example.com/</param>
-    /// <param name="serverRootPath">Root-Pfad der Server-Anwendung, Standard "/stuntman".</param>
+    /// <param name="serverBaseUrl">Base URL of the server application, e.g. https://auth.example.com/</param>
+    /// <param name="serverRootPath">Root path of the server application, default "/stuntman".</param>
     public StandInOptions AddConfigurationFromServer(string serverBaseUrl, string serverRootPath = StandInDefaults.DefaultRootPath)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(serverBaseUrl);
@@ -147,7 +147,7 @@ public sealed class StandInOptions : AuthenticationSchemeOptions
         return this;
     }
 
-    /// <summary>Wie <see cref="AddConfigurationFromServer"/>, aber Fehler werden nur an <paramref name="onException"/> gemeldet.</summary>
+    /// <summary>Like <see cref="AddConfigurationFromServer"/>, but errors are only reported to <paramref name="onException"/>.</summary>
     public StandInOptions TryAddConfigurationFromServer(
         string serverBaseUrl,
         Action<Exception>? onException = null,
@@ -167,7 +167,7 @@ public sealed class StandInOptions : AuthenticationSchemeOptions
         return this;
     }
 
-    /// <summary>Aktiviert den Server-Endpunkt dieser Anwendung (liefert Benutzer inkl. Tokens ohne Anmeldung).</summary>
+    /// <summary>Activates the server endpoint of this application (hands out users including tokens without a sign-in).</summary>
     public StandInOptions EnableServer()
     {
         ServerEnabled = true;
@@ -175,8 +175,8 @@ public sealed class StandInOptions : AuthenticationSchemeOptions
     }
 
     /// <summary>
-    /// Aktiviert <c>POST {RootPath}/token</c> mit <c>{ "userId": "..." }</c>: liefert das Bearer-Token des Benutzers
-    /// (für Blazor WebAssembly, MAUI, WPF, SPAs). Benutzer ohne Token bekommen ein zufälliges Entwicklungs-Token.
+    /// Activates <c>POST {RootPath}/token</c> with <c>{ "userId": "..." }</c>: returns the user's bearer token
+    /// (for Blazor WebAssembly, MAUI, WPF, SPAs). Users without a token get a random development token.
     /// </summary>
     public StandInOptions EnableTokenEndpoint()
     {
@@ -196,7 +196,7 @@ public sealed class StandInOptions : AuthenticationSchemeOptions
         return this;
     }
 
-    /// <summary>Erlaubt Weiterleitungen nach dem Anmelden zu einer fremden Adresse, z. B. "https://localhost:5173".</summary>
+    /// <summary>Allows redirects after sign-in to a foreign address, e.g. "https://localhost:5173".</summary>
     public StandInOptions AddAllowedReturnOrigin(string origin)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(origin);
@@ -211,7 +211,7 @@ public sealed class StandInOptions : AuthenticationSchemeOptions
         return this;
     }
 
-    /// <summary>Darf diese Origin (aus dem <c>Origin</c>-Header) die Endpunkte per CORS lesen?</summary>
+    /// <summary>May this origin (from the <c>Origin</c> header) read the endpoints through CORS?</summary>
     internal bool IsAllowedOrigin(string? origin)
     {
         return !string.IsNullOrEmpty(origin) && _allowedReturnOrigins.Contains(origin);
@@ -236,8 +236,8 @@ public sealed class StandInOptions : AuthenticationSchemeOptions
     }
 
     /// <summary>
-    /// Nur lokale Pfade ("/home") oder freigegebene Origins sind als Ziel nach dem Anmelden erlaubt.
-    /// "//host" und "/\host" gelten nicht als lokal (Open-Redirect-Schutz).
+    /// Only local paths ("/home") or allowed origins are valid targets after sign-in.
+    /// "//host" and "/\host" do not count as local (open-redirect protection).
     /// </summary>
     internal bool IsAllowedReturnUrl(string? url)
     {

@@ -1,8 +1,8 @@
 # Third-Party Notices
 
-StandIn ist ein Nachfolger von [RimDev.Stuntman](https://github.com/ritterim/stuntman).
-API-Design, Verhalten und Teile der Implementierung orientieren sich an Stuntman,
-das unter der folgenden Lizenz steht:
+StandIn is a successor of [RimDev.Stuntman](https://github.com/ritterim/stuntman).
+API design, behavior and parts of the implementation are modeled on Stuntman,
+which is licensed as follows:
 
 ## RimDev.Stuntman
 
@@ -31,5 +31,5 @@ SOFTWARE.
 
 ```
 
-"Stuntman" und "RimDev" sind Namen der Ritter Insurance Marketing. StandIn ist kein
-Produkt von Ritter Insurance Marketing und steht in keiner Verbindung dazu.
+"Stuntman" and "RimDev" are names of Ritter Insurance Marketing. StandIn is not a
+product of Ritter Insurance Marketing and is not affiliated with it.

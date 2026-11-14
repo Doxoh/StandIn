@@ -5,7 +5,7 @@ using System.Security.Claims;
 
 namespace StandIn.AspNetCore;
 
-/// <summary>Ein Benutzer, als der man sich waehrend der Entwicklung anmelden kann.</summary>
+/// <summary>A user you can sign in as during development.</summary>
 public sealed class StandInUser
 {
     public const string DefaultNameClaimType = "name";
@@ -26,7 +26,7 @@ public sealed class StandInUser
     {
     }
 
-    /// <summary>Legt einen Benutzer mit automatisch erzeugter Id an.</summary>
+    /// <summary>Creates a user with an automatically generated id.</summary>
     public StandInUser(string name)
         : this(Guid.NewGuid().ToString("D"), name)
     {
@@ -77,9 +77,9 @@ public sealed class StandInUser
     }
 
     /// <summary>
-    /// Baut den ClaimsPrincipal. Neben den eigenen Claims kommen Name (unter dem Namens-Claim-Typ
-    /// des Benutzers und unter ClaimTypes.Name), NameIdentifier und die StandIn-Id dazu.
-    /// Doppelte Claims (gleicher Typ und Wert) werden nur einmal aufgenommen.
+    /// Builds the ClaimsPrincipal. Besides the own claims it adds the name (under the name claim type
+    /// of the user and under ClaimTypes.Name), NameIdentifier and the StandIn id.
+    /// Duplicate claims (same type and value) are added only once.
     /// </summary>
     internal ClaimsPrincipal ToPrincipal(string authenticationType, string? accessToken = null)
     {

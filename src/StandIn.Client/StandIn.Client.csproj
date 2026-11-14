@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <PackageId>StandIn.Client</PackageId>
-    <Description>StandIn-Client fuer HttpClient (MAUI, WPF, WinForms, Konsole, Worker): holt ein Dev-Token vom StandIn-Token-Endpunkt und haengt es als Bearer an.</Description>
+    <Description>StandIn client for HttpClient (MAUI, WPF, WinForms, console, worker): fetches a dev token from the StandIn token endpoint and attaches it as bearer.</Description>
     <RootNamespace>StandIn.Client</RootNamespace>
   </PropertyGroup>
 

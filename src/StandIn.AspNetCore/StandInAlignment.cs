@@ -1,6 +1,6 @@
 namespace StandIn.AspNetCore;
 
-/// <summary>Position des User Pickers auf der Seite.</summary>
+/// <summary>Horizontal position of the user picker on the page.</summary>
 public enum StandInAlignment
 {
     Left,

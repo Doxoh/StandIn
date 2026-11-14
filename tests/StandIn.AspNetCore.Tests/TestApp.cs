@@ -13,7 +13,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace StandIn.AspNetCore.Tests;
 
-/// <summary>Startet eine kleine Anwendung im Speicher (TestServer) mit StandIn.</summary>
+/// <summary>Starts a small in-memory application (TestServer) with StandIn.</summary>
 internal sealed class TestApp : IAsyncDisposable
 {
     private TestApp(WebApplication app)
@@ -55,7 +55,7 @@ internal sealed class TestApp : IAsyncDisposable
         app.MapGet("/page", () => Results.Content("<html><body><h1>Hi</h1></body></html>", "text/html; charset=utf-8"));
         app.MapGet("/fragment", () => Results.Content("<p>no body tag</p>", "text/html; charset=utf-8"));
 
-        // Gibt den Benutzernamen zurueck, oder "anonymous".
+        // Returns the user name, or "anonymous".
         app.MapGet("/whoami", (ClaimsPrincipal user) => user.Identity?.Name ?? "anonymous");
         app.MapGet("/secure", (ClaimsPrincipal user) => user.Identity?.Name ?? "?").RequireAuthorization();
         app.MapGet("/claims", (ClaimsPrincipal user) =>

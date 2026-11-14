@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   build-test:
-    name: Build und Test (${{ matrix.os }})
+    name: Build and test (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -19,9 +19,9 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
-          fetch-depth: 0   # MinVer braucht die Tags
+          fetch-depth: 0   # MinVer needs the tags
 
-      # Beide Laufzeiten installieren, damit Tests auf net8.0 und net10.0 laufen.
+      # Install both runtimes so tests run on net8.0 and net10.0.
       - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: |
@@ -35,11 +35,11 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: testergebnisse-${{ matrix.os }}
+          name: test-results-${{ matrix.os }}
           path: "**/TestResults/**"
 
   pack:
-    name: Pakete bauen
+    name: Build packages
     runs-on: ubuntu-latest
     needs: build-test
     steps:
@@ -54,5 +54,5 @@ jobs:
       - run: dotnet pack -c Release -o artifacts
       - uses: actions/upload-artifact@v4
         with:
-          name: nuget-pakete
+          name: nuget-packages
           path: artifacts/*.*nupkg

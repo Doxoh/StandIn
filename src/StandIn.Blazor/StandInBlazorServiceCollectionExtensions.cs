@@ -8,9 +8,9 @@ namespace StandIn.Blazor;
 public static class StandInBlazorServiceCollectionExtensions
 {
     /// <summary>
-    /// Fuer Blazor WebAssembly, Auto (WASM-Teil) und Hybrid: registriert <see cref="StandInSession"/> und den
-    /// <see cref="StandInAuthenticationStateProvider"/>. Nur in Entwicklungsumgebungen aufrufen. API-Clients bekommen
-    /// das Token mit <c>AddHttpClient("api").AddStandInBearerToken()</c>.
+    /// For Blazor WebAssembly, Auto (WASM part) and Hybrid: registers <see cref="StandInSession"/> and the
+    /// <see cref="StandInAuthenticationStateProvider"/>. Call only in development environments. API clients get
+    /// the token with <c>AddHttpClient("api").AddStandInBearerToken()</c>.
     /// </summary>
     public static IServiceCollection AddStandInBlazor(this IServiceCollection services, Action<StandInClientOptions> configure)
     {

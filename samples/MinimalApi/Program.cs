@@ -3,7 +3,7 @@ using StandIn.AspNetCore;
 
 namespace StandIn.Samples.MinimalApi;
 
-/// <summary>REST-API mit StandIn: Bearer-Token und Token-Endpunkt (fuer Clients ohne Cookie).</summary>
+/// <summary>REST API with StandIn: bearer tokens and token endpoint (for clients without cookies).</summary>
 public class Program
 {
     public static void Main(string[] args)

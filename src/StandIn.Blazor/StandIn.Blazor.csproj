@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <PackageId>StandIn.Blazor</PackageId>
-    <Description>StandIn fuer Blazor Server, WebAssembly, Auto und Hybrid: User-Picker-Komponente, AuthenticationStateProvider und Token-Handling.</Description>
+    <Description>StandIn for Blazor WebAssembly, Auto and Hybrid: user picker component, AuthenticationStateProvider and token handling.</Description>
     <RootNamespace>StandIn.Blazor</RootNamespace>
   </PropertyGroup>
 
