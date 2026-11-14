@@ -1,6 +1,8 @@
 using System;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -57,9 +59,7 @@ public static class StandInEndpointRouteBuilderExtensions
 
                 if (user is null)
                 {
-                    context.Response.StatusCode = StatusCodes.Status404NotFound;
-                    context.Response.ContentType = "text/plain; charset=utf-8";
-                    await context.Response.WriteAsync($"options provided does not include the requested '{userId}' user.");
+                    await WriteTextAsync(context, StatusCodes.Status404NotFound, $"options provided does not include the requested '{userId}' user.");
                     return;
                 }
 
@@ -81,9 +81,34 @@ public static class StandInEndpointRouteBuilderExtensions
                 StandInUserLoader.WriteOptions));
         }
 
-        group.MapGet("/users", (HttpContext context) => context.Response.WriteAsJsonAsync(
-            StandInUserLoader.ToDocument(options.Users, includeAccessTokens: false),
-            StandInUserLoader.WriteOptions));
+        group.MapGet("/users", (HttpContext context) =>
+        {
+            AddCorsHeaders(context, options);
+
+            return context.Response.WriteAsJsonAsync(
+                StandInUserLoader.ToDocument(options.Users, includeAccessTokens: false),
+                StandInUserLoader.WriteOptions);
+        });
+
+        if (options.TokenEndpointEnabled)
+        {
+            MapToken(group, options);
+            MapTokenPreflight(group, options);
+
+            services.GetRequiredService<ILoggerFactory>().CreateLogger("StandIn").LogWarning(
+                "StandIn: the endpoint {Path} hands out a bearer token for any user without authentication. Use it for development only.",
+                options.RootPath + "/token");
+        }
+
+        // Alte Links und Lesezeichen funktionieren nach einem geaenderten Root-Pfad weiter.
+        if (!IsAtOrUnder(options.RootPath, StandInDefaults.DefaultRootPath))
+        {
+            endpoints.Map(StandInDefaults.DefaultRootPath + "/{**rest}", (HttpContext context, string? rest) =>
+                Results.Redirect(
+                    $"{context.Request.PathBase}{options.RootPath}/{rest?.TrimStart('/', '\\')}{context.Request.QueryString}",
+                    permanent: true,
+                    preserveMethod: true));
+        }
 
         return endpoints;
     }
@@ -111,7 +136,111 @@ public static class StandInEndpointRouteBuilderExtensions
             return candidate;
         }
 
-        return context.Request.PathBase.HasValue ? context.Request.PathBase.Value! : "/";
+        return options.FrontendBaseUrl ?? (context.Request.PathBase.HasValue ? context.Request.PathBase.Value! : "/");
+    }
+
+    private static void MapToken(RouteGroupBuilder group, StandInOptions options)
+    {
+        // Benutzer ohne Token bekommen ein zufaelliges Entwicklungs-Token (nur im Speicher).
+        foreach (var user in options.Users.Where(user => user.AccessToken is null))
+        {
+            user.SetAccessToken(Convert.ToHexString(RandomNumberGenerator.GetBytes(16)));
+        }
+
+        group.MapPost("/token", async (HttpContext context) =>
+        {
+            AddCorsHeaders(context, options);
+
+            // Nur JSON: ein fremdes Formular kann den Endpunkt nicht anstossen, und CORS verlangt einen Preflight.
+            if (!context.Request.HasJsonContentType())
+            {
+                context.Response.StatusCode = StatusCodes.Status415UnsupportedMediaType;
+                return;
+            }
+
+            TokenRequest? request;
+
+            try
+            {
+                request = await context.Request.ReadFromJsonAsync<TokenRequest>();
+            }
+            catch (JsonException)
+            {
+                request = null;
+            }
+
+            var userId = request?.UserId;
+
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                await WriteTextAsync(context, StatusCodes.Status400BadRequest, "The request needs a JSON body like { \"userId\": \"admin\" }.");
+                return;
+            }
+
+            var user = options.Users.FirstOrDefault(candidate => candidate.Id == userId);
+
+            if (user is null)
+            {
+                await WriteTextAsync(context, StatusCodes.Status404NotFound, $"options provided does not include the requested '{userId}' user.");
+                return;
+            }
+
+            await context.Response.WriteAsJsonAsync(new
+            {
+                access_token = user.AccessToken,
+                token_type = "Bearer",
+                user_id = user.Id,
+                name = user.Name,
+                claims = user.Claims.Select(claim => new { type = claim.Type, value = claim.Value }),
+            });
+        });
+    }
+
+    private static Task WriteTextAsync(HttpContext context, int statusCode, string text)
+    {
+        context.Response.StatusCode = statusCode;
+        context.Response.ContentType = "text/plain; charset=utf-8";
+        return context.Response.WriteAsync(text);
+    }
+
+    /// <summary>CORS nur fuer freigegebene Origins (FrontendBaseUrl, AddAllowedReturnOrigin).</summary>
+    private static bool AddCorsHeaders(HttpContext context, StandInOptions options)
+    {
+        var origin = context.Request.Headers.Origin.ToString();
+
+        if (!options.IsAllowedOrigin(origin))
+        {
+            return false;
+        }
+
+        context.Response.Headers["Access-Control-Allow-Origin"] = origin;
+        context.Response.Headers.Append("Vary", "Origin");
+        return true;
+    }
+
+    /// <summary>Preflight fuer Browser-Frontends: das JSON-POST an den Token-Endpunkt braucht ihn.</summary>
+    private static void MapTokenPreflight(RouteGroupBuilder group, StandInOptions options)
+    {
+        group.MapMethods("/token", new[] { HttpMethods.Options }, (HttpContext context) =>
+        {
+            if (AddCorsHeaders(context, options))
+            {
+                context.Response.Headers["Access-Control-Allow-Methods"] = "POST";
+                context.Response.Headers["Access-Control-Allow-Headers"] = "Content-Type";
+                context.Response.Headers["Access-Control-Max-Age"] = "600";
+            }
+
+            context.Response.StatusCode = StatusCodes.Status204NoContent;
+        });
+    }
+
+    private static bool IsAtOrUnder(string path, string root) =>
+        path.Equals(root, StringComparison.OrdinalIgnoreCase)
+        || path.StartsWith(root + "/", StringComparison.OrdinalIgnoreCase);
+
+    private sealed class TokenRequest
+    {
+        public string? UserId { get; set; }
     }
 
     private static CookieOptions CreateCookieOptions(HttpContext context) => new()

@@ -3,7 +3,7 @@
 Benutzer während der Entwicklung simulieren: ein gepflegter Nachfolger von
 [RimDev.Stuntman](https://github.com/ritterim/stuntman) für ASP.NET Core ab .NET 8.
 
-> Status: in Entwicklung (Phase 1). Noch nicht auf NuGet veröffentlicht.
+> Status: in Entwicklung (Phase 1 bis 4 umgesetzt, Stand siehe `.ai/roadmap.md`). Noch nicht auf NuGet veröffentlicht.
 
 ## Pakete
 
