@@ -7,6 +7,10 @@
 - `server`-Endpunkt, `AddConfigurationFromServer`, `TryAddConfigurationFromServer`, `AddUsersFromJson`.
 - `AfterBearerValidateIdentity`, `SetUserPickerAlignment`, drei Konstruktoren von `StandInUser`.
 
+## Zusätze
+
+- `SetUserPickerVerticalPosition(Top | Bottom)`: Picker oben (Standard) oder unten; das Original kennt nur die horizontale Ausrichtung.
+
 ## Bewusste Abweichungen
 
 | Original | StandIn | Grund |
