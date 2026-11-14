@@ -1,0 +1,42 @@
+@using System.Collections.Generic
+@using StandIn.Client
+@implements IDisposable
+@inject StandInSession Session
+
+<span class="standin-picker">
+    <select aria-label="StandIn" @onchange="SelectAsync">
+        <option value="" selected="@(Session.Current is null)">anonymous</option>
+        @foreach (var user in _users)
+        {
+            <option value="@user.Id" title="@user.Description" selected="@(Session.Current?.UserId == user.Id)">@user.Name</option>
+        }
+    </select>
+</span>
+
+@code {
+    private IReadOnlyList<StandInUserInfo> _users = new List<StandInUserInfo>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Session.Changed += OnSessionChanged;
+        _users = await Session.GetUsersAsync();
+    }
+
+    private void OnSessionChanged() => _ = InvokeAsync(StateHasChanged);
+
+    private async Task SelectAsync(ChangeEventArgs e)
+    {
+        var userId = e.Value?.ToString();
+
+        if (string.IsNullOrEmpty(userId))
+        {
+            Session.SignOut();
+        }
+        else
+        {
+            await Session.SignInAsync(userId);
+        }
+    }
+
+    public void Dispose() => Session.Changed -= OnSessionChanged;
+}

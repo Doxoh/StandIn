@@ -12,7 +12,7 @@
 | Projekt | Stand |
 | --- | --- |
 | `src/StandIn.AspNetCore` | Kern, umgesetzt (Phase 1 und 2) |
-| `src/StandIn.Blazor` | leer, Phase 5 |
+| `src/StandIn.Blazor` | Picker-Komponente, AuthenticationStateProvider (Phase 5b) |
 | `src/StandIn.Client` | Session und Token-Handler (Phase 5a) |
 | `src/StandIn.Testing` | Test-Header-Hilfen (Phase 3) |
 | `tests/StandIn.AspNetCore.Tests` | xUnit |
