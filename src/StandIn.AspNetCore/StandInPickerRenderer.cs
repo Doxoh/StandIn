@@ -15,6 +15,9 @@ internal static class StandInPickerRenderer
         .standin-left{left:1rem}.standin-right{right:1rem}.standin-center{left:50%;transform:translateX(-50%)}
         .standin summary{cursor:pointer;background:#1f2937;color:#fff;padding:.25rem .75rem;border-radius:0 0 .5rem .5rem;list-style:none}
         .standin ul{margin:0;padding:.25rem 0;list-style:none;background:#fff;color:#111;border:1px solid #d1d5db;border-radius:.25rem;box-shadow:0 4px 12px rgba(0,0,0,.2)}
+        .standin-bottom{top:auto;bottom:0}
+        .standin-bottom summary{border-radius:.5rem .5rem 0 0}
+        .standin-bottom ul{position:absolute;bottom:100%;left:0;white-space:nowrap}
         .standin a{display:block;padding:.25rem .75rem;color:inherit;text-decoration:none}
         .standin a:hover{background:#e5e7eb}
         .standin .standin-active{font-weight:700}
@@ -27,7 +30,9 @@ internal static class StandInPickerRenderer
 
         var html = new StringBuilder();
         html.Append("<style>").Append(Css).Append("</style>");
-        html.Append("<div class=\"standin standin-").Append(AlignmentClass(options.UserPickerAlignment)).Append("\">");
+        html.Append("<div class=\"standin standin-").Append(AlignmentClass(options.UserPickerAlignment))
+            .Append(options.UserPickerVerticalPosition == StandInVerticalPosition.Bottom ? " standin-bottom" : string.Empty)
+            .Append("\">");
         html.Append("<details><summary>StandIn: ")
             .Append(WebUtility.HtmlEncode(activeName ?? "anonymous"))
             .Append("</summary><ul>");

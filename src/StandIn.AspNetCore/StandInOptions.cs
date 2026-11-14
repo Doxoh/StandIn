@@ -72,6 +72,8 @@ public sealed class StandInOptions : AuthenticationSchemeOptions
 
     public StandInAlignment UserPickerAlignment { get; private set; }
 
+    public StandInVerticalPosition UserPickerVerticalPosition { get; private set; }
+
     /// <summary>Ist der Server-Endpunkt aktiv? Achtung: er liefert alle Access Tokens ohne Anmeldung aus.</summary>
     public bool ServerEnabled { get; private set; }
 
@@ -185,6 +187,12 @@ public sealed class StandInOptions : AuthenticationSchemeOptions
     public StandInOptions SetUserPickerAlignment(StandInAlignment alignment)
     {
         UserPickerAlignment = alignment;
+        return this;
+    }
+
+    public StandInOptions SetUserPickerVerticalPosition(StandInVerticalPosition position)
+    {
+        UserPickerVerticalPosition = position;
         return this;
     }
 

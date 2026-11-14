@@ -65,6 +65,17 @@ public class PickerTests
     }
 
     [Fact]
+    public void Picker_is_at_the_top_by_default_and_at_the_bottom_on_request()
+    {
+        var top = StandInPickerRenderer.RenderPicker(Options(), null, string.Empty, null);
+        var bottom = StandInPickerRenderer.RenderPicker(
+            Options().SetUserPickerVerticalPosition(StandInVerticalPosition.Bottom), null, string.Empty, null);
+
+        Assert.DoesNotContain("<div class=\"standin standin-left standin-bottom\">", top, StringComparison.Ordinal);
+        Assert.Contains("<div class=\"standin standin-left standin-bottom\">", bottom, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void Picker_links_include_the_path_base()
     {
         var html = StandInPickerRenderer.RenderPicker(Options(), null, "/app", null);

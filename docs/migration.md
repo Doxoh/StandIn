@@ -29,6 +29,7 @@ Die Gründe stehen in [.ai/parity.md](../.ai/parity.md) und [.ai/security.md](..
 
 - `POST /stuntman/token` für Clients ohne Cookie (`EnableTokenEndpoint()`), dazu `StandIn.Client` und `StandIn.Blazor`.
 - `FrontendBaseUrl` für ein Frontend auf anderer Adresse, mit CORS nur für freigegebene Origins.
+- `SetUserPickerVerticalPosition` (Picker unten statt oben).
 - `AddUsersFromConfiguration` (Benutzer aus `appsettings`).
 - Test-Header `X-Stuntman-User` (`AllowTestHeader`, standardmäßig aus) und das Paket `StandIn.Testing`.
 
