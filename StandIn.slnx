@@ -5,8 +5,13 @@
     <Project Path="src/StandIn.Client/StandIn.Client.csproj" />
     <Project Path="src/StandIn.Testing/StandIn.Testing.csproj" />
   </Folder>
+  <Folder Name="/samples/">
+    <Project Path="samples/MinimalApi/StandIn.Samples.MinimalApi.csproj" />
+    <Project Path="samples/Mvc/StandIn.Samples.Mvc.csproj" />
+  </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/StandIn.AspNetCore.Tests/StandIn.AspNetCore.Tests.csproj" />
+    <Project Path="tests/StandIn.Samples.Tests/StandIn.Samples.Tests.csproj" />
   </Folder>
   <Folder Name="/Solution Items/">
     <File Path="Directory.Build.props" />

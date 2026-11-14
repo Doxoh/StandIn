@@ -1,0 +1,13 @@
+@using StandIn.AspNetCore
+<!DOCTYPE html>
+<html>
+<head>
+    <title>StandIn MVC sample</title>
+</head>
+<body>
+    <h1>StandIn MVC sample</h1>
+    <p>Signed in as: @(User.Identity?.Name ?? "nobody")</p>
+    <p><a href="/Home/Secret">Protected page</a></p>
+    @Html.StandInUserPicker()
+</body>
+</html>

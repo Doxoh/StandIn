@@ -1,5 +1,7 @@
 using System;
 using System.Net.Http;
+using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using StandIn.AspNetCore;
 
@@ -18,6 +20,18 @@ public static class StandInTestingExtensions
         return services.PostConfigure<StandInOptions>(
             StandInDefaults.AuthenticationScheme,
             options => options.AllowTestHeader = true);
+    }
+
+    /// <summary>Ein Client der <see cref="WebApplicationFactory{TEntryPoint}"/>, dessen Anfragen als Benutzer <paramref name="userId"/> gelten.</summary>
+    public static HttpClient CreateStandInClient<TEntryPoint>(this WebApplicationFactory<TEntryPoint> factory, string userId)
+        where TEntryPoint : class
+    {
+        ArgumentNullException.ThrowIfNull(factory);
+
+        return factory
+            .WithWebHostBuilder(builder => builder.ConfigureTestServices(services => services.AllowStandInTestHeader()))
+            .CreateClient()
+            .AsStandInUser(userId);
     }
 
     /// <summary>Alle Anfragen dieses Clients gelten als Benutzer <paramref name="userId"/>.</summary>
