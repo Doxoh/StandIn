@@ -14,12 +14,10 @@ It offers cookie sign-in with a user picker for MVC, Razor Pages and Blazor Serv
 > **For development only.** StandIn switches itself on only in `Development` and cannot be activated in `Production`.
 > It does not replace real authentication. Details: [SECURITY.md](SECURITY.md).
 
-> Status: preview (0.x). The feature set matches RimDev.Stuntman plus extensions. The API may still change before 1.0.
-
 ## Installation
 
 ```
-dotnet add package StandIn.AspNetCore --prerelease
+dotnet add package StandIn.AspNetCore
 ```
 
 | Package | Purpose |
