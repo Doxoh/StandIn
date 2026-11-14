@@ -15,7 +15,7 @@ Diese Datei fasst die verbindlichen Entscheidungen für die Entwicklung zusammen
 
 ## Feature-Parität zu RimDev.Stuntman (Auszug)
 
-- Benutzer: `AddUser`, `AddUsers` (doppelte Id → Exception); `StandInUser(id, name)`, `(name)` mit Auto-GUID,
+- Benutzer: `AddUser` (doppelte Id → Exception); `StandInUser(id, name)`, `(name)` mit Auto-GUID,
   `(id, name, nameClaimType, roleClaimType)`; `AddClaim`, `AddName`, `AddRole`, `SetAccessToken`,
   `SetDescription`, `SetSource`
 - Quellen: `AddUsersFromJson(pfadOderUrl, configureUsers?)`, JSON-Format `{ "Users": [ { "Id", "Name", "AccessToken", "Description", "NameClaimType", "RoleClaimType", "Claims": [ { "Type", "Value" } ] } ] }`

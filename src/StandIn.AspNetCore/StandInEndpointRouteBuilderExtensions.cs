@@ -28,81 +28,57 @@ public static class StandInEndpointRouteBuilderExtensions
             return endpoints;
         }
 
-        var monitor = services.GetRequiredService<IOptionsMonitor<StandInOptions>>();
-        var group = endpoints.MapGroup(monitor.Get(StandInDefaults.AuthenticationScheme).RootPath);
+        // Die Optionen sind nach dem Start fix, daher einmal lesen und bedingt mappen.
+        var options = services.GetRequiredService<IOptionsMonitor<StandInOptions>>()
+            .Get(StandInDefaults.AuthenticationScheme);
+        var group = endpoints.MapGroup(options.RootPath);
 
-        group.MapGet("/sign-in", async (HttpContext context) =>
+        if (options.AllowCookieAuthentication)
         {
-            var options = monitor.Get(StandInDefaults.AuthenticationScheme);
-
-            if (!options.AllowCookieAuthentication)
+            group.MapGet("/sign-in", async (HttpContext context) =>
             {
-                context.Response.StatusCode = StatusCodes.Status404NotFound;
-                return;
-            }
+                var userId = context.Request.Query[StandInDefaults.OverrideUserIdQueryKey].ToString();
+                var returnUrl = ResolveReturnUrl(context, options);
 
-            var userId = context.Request.Query[StandInDefaults.OverrideUserIdQueryKey].ToString();
-            var returnUrl = ResolveReturnUrl(context, options);
+                if (string.IsNullOrWhiteSpace(userId))
+                {
+                    context.Response.ContentType = "text/html; charset=utf-8";
+                    await context.Response.WriteAsync(
+                        StandInPickerRenderer.RenderLoginPage(options, context.Request.PathBase, returnUrl));
+                    return;
+                }
 
-            if (string.IsNullOrWhiteSpace(userId))
+                var user = options.Users.FirstOrDefault(candidate => candidate.Id == userId);
+
+                if (user is null)
+                {
+                    context.Response.StatusCode = StatusCodes.Status404NotFound;
+                    context.Response.ContentType = "text/plain; charset=utf-8";
+                    await context.Response.WriteAsync($"options provided does not include the requested '{userId}' user.");
+                    return;
+                }
+
+                context.Response.Cookies.Append(StandInDefaults.CookieName, user.Id, CreateCookieOptions(context));
+                context.Response.Redirect(returnUrl);
+            });
+
+            group.MapGet("/sign-out", (HttpContext context) =>
             {
-                context.Response.ContentType = "text/html; charset=utf-8";
-                await context.Response.WriteAsync(
-                    StandInPickerRenderer.RenderLoginPage(options, context.Request.PathBase, returnUrl));
-                return;
-            }
+                context.Response.Cookies.Delete(StandInDefaults.CookieName, CreateCookieOptions(context));
+                context.Response.Redirect(ResolveReturnUrl(context, options));
+            });
+        }
 
-            var user = options.Users.FirstOrDefault(candidate => candidate.Id == userId);
-
-            if (user is null)
-            {
-                context.Response.StatusCode = StatusCodes.Status404NotFound;
-                context.Response.ContentType = "text/plain; charset=utf-8";
-                await context.Response.WriteAsync($"options provided does not include the requested '{userId}' user.");
-                return;
-            }
-
-            context.Response.Cookies.Append(StandInDefaults.CookieName, user.Id, CreateCookieOptions(context));
-            context.Response.Redirect(returnUrl);
-        });
-
-        group.MapGet("/sign-out", (HttpContext context) =>
+        if (options.ServerEnabled)
         {
-            var options = monitor.Get(StandInDefaults.AuthenticationScheme);
-
-            if (!options.AllowCookieAuthentication)
-            {
-                context.Response.StatusCode = StatusCodes.Status404NotFound;
-                return;
-            }
-
-            context.Response.Cookies.Delete(StandInDefaults.CookieName, CreateCookieOptions(context));
-            context.Response.Redirect(ResolveReturnUrl(context, options));
-        });
-
-        group.MapGet("/server", async (HttpContext context) =>
-        {
-            var options = monitor.Get(StandInDefaults.AuthenticationScheme);
-
-            if (!options.ServerEnabled)
-            {
-                context.Response.StatusCode = StatusCodes.Status404NotFound;
-                return;
-            }
-
-            await context.Response.WriteAsJsonAsync(
+            group.MapGet("/server", (HttpContext context) => context.Response.WriteAsJsonAsync(
                 StandInUserLoader.ToDocument(options.Users, includeAccessTokens: true),
-                StandInUserLoader.WriteOptions);
-        });
+                StandInUserLoader.WriteOptions));
+        }
 
-        group.MapGet("/users", async (HttpContext context) =>
-        {
-            var options = monitor.Get(StandInDefaults.AuthenticationScheme);
-
-            await context.Response.WriteAsJsonAsync(
-                StandInUserLoader.ToDocument(options.Users, includeAccessTokens: false),
-                StandInUserLoader.WriteOptions);
-        });
+        group.MapGet("/users", (HttpContext context) => context.Response.WriteAsJsonAsync(
+            StandInUserLoader.ToDocument(options.Users, includeAccessTokens: false),
+            StandInUserLoader.WriteOptions));
 
         return endpoints;
     }

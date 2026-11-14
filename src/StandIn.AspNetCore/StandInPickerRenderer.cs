@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Net;
 using System.Security.Claims;
 using System.Text;
@@ -22,7 +23,7 @@ internal static class StandInPickerRenderer
     public static string RenderPicker(StandInOptions options, ClaimsPrincipal? principal, string pathBase, string? returnUrl)
     {
         var activeId = principal?.FindFirst(StandInDefaults.UserIdClaimType)?.Value;
-        var activeName = options.Users.Count == 0 ? null : FindName(options, activeId);
+        var activeName = options.Users.FirstOrDefault(user => user.Id == activeId)?.Name;
 
         var html = new StringBuilder();
         html.Append("<style>").Append(Css).Append("</style>");
@@ -77,19 +78,6 @@ internal static class StandInPickerRenderer
 
         html.Append("</ul></body></html>");
         return html.ToString();
-    }
-
-    private static string? FindName(StandInOptions options, string? activeId)
-    {
-        foreach (var user in options.Users)
-        {
-            if (user.Id == activeId)
-            {
-                return user.Name;
-            }
-        }
-
-        return null;
     }
 
     private static string SignInLink(StandInOptions options, string pathBase, StandInUser user, string? returnUrl)

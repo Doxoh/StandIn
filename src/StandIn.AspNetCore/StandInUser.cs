@@ -70,7 +70,7 @@ public sealed class StandInUser
         return this;
     }
 
-    public StandInUser SetSource(string source)
+    internal StandInUser SetSource(string source)
     {
         Source = Require(source, nameof(source));
         return this;
@@ -83,34 +83,28 @@ public sealed class StandInUser
     /// </summary>
     internal ClaimsPrincipal ToPrincipal(string authenticationType, string? accessToken = null)
     {
-        var claims = new List<Claim>();
-        var seen = new HashSet<(string Type, string Value)>();
+        var claims = new List<Claim>(_claims);
 
-        void Add(string type, string value)
+        void Ensure(string type, string value)
         {
-            if (seen.Add((type, value)))
+            if (!claims.Any(c => c.Type == type && c.Value == value))
             {
                 claims.Add(new Claim(type, value));
             }
         }
 
-        Add(StandInDefaults.UserIdClaimType, Id);
-        Add(NameClaimType, Name);
-        Add(ClaimTypes.Name, Name);
+        Ensure(StandInDefaults.UserIdClaimType, Id);
+        Ensure(NameClaimType, Name);
+        Ensure(ClaimTypes.Name, Name);
 
-        if (!_claims.Any(c => c.Type == ClaimTypes.NameIdentifier))
+        if (!claims.Any(c => c.Type == ClaimTypes.NameIdentifier))
         {
-            Add(ClaimTypes.NameIdentifier, Id);
-        }
-
-        foreach (var claim in _claims)
-        {
-            Add(claim.Type, claim.Value);
+            claims.Add(new Claim(ClaimTypes.NameIdentifier, Id));
         }
 
         if (accessToken is not null)
         {
-            Add(StandInDefaults.AccessTokenClaimType, accessToken);
+            claims.Add(new Claim(StandInDefaults.AccessTokenClaimType, accessToken));
         }
 
         return new ClaimsPrincipal(new ClaimsIdentity(claims, authenticationType, NameClaimType, RoleClaimType));

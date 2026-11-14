@@ -53,18 +53,6 @@ public sealed class StandInOptions : AuthenticationSchemeOptions
     /// <summary>Fuegt einen Benutzer hinzu. Die Id muss eindeutig sein.</summary>
     public StandInOptions AddUser(StandInUser user) => AddUser(user, StandInDefaults.LocalSource);
 
-    public StandInOptions AddUsers(IEnumerable<StandInUser> users)
-    {
-        ArgumentNullException.ThrowIfNull(users);
-
-        foreach (var user in users)
-        {
-            AddUser(user);
-        }
-
-        return this;
-    }
-
     /// <summary>
     /// Fuegt Benutzer aus einer JSON-Datei oder http(s)-URL hinzu.
     /// Format: { "Users": [ { "Id": "user-1", "Name": "User 1" } ] }

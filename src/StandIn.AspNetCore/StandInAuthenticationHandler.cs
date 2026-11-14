@@ -17,8 +17,7 @@ namespace StandIn.AspNetCore;
 /// </summary>
 public sealed class StandInAuthenticationHandler : AuthenticationHandler<StandInOptions>
 {
-    private const string FailureStatusItem = "StandIn.FailureStatus";
-    private const string FailureMessageItem = "StandIn.FailureMessage";
+    private const string FailureItem = "StandIn.Failure";
 
     public StandInAuthenticationHandler(
         IOptionsMonitor<StandInOptions> options,
@@ -54,16 +53,11 @@ public sealed class StandInAuthenticationHandler : AuthenticationHandler<StandIn
 
     protected override async Task HandleChallengeAsync(AuthenticationProperties properties)
     {
-        if (Context.Items.TryGetValue(FailureStatusItem, out var status) && status is int statusCode)
+        if (Context.Items.TryGetValue(FailureItem, out var item) && item is Failure failure)
         {
-            Response.StatusCode = statusCode;
-
-            if (Context.Items.TryGetValue(FailureMessageItem, out var message) && message is string text)
-            {
-                Response.ContentType = "text/plain; charset=utf-8";
-                await Response.WriteAsync(text);
-            }
-
+            Response.StatusCode = failure.Status;
+            Response.ContentType = "text/plain; charset=utf-8";
+            await Response.WriteAsync(failure.Message);
             return;
         }
 
@@ -118,10 +112,11 @@ public sealed class StandInAuthenticationHandler : AuthenticationHandler<StandIn
 
     private AuthenticateResult Fail(int statusCode, string message)
     {
-        Context.Items[FailureStatusItem] = statusCode;
-        Context.Items[FailureMessageItem] = message;
+        Context.Items[FailureItem] = new Failure(statusCode, message);
         return AuthenticateResult.Fail(message);
     }
+
+    private sealed record Failure(int Status, string Message);
 
     private bool IsBrowserNavigation()
     {
