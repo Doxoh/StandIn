@@ -14,7 +14,7 @@
 | `src/StandIn.AspNetCore` | Kern, umgesetzt (Phase 1 und 2) |
 | `src/StandIn.Blazor` | leer, Phase 5 |
 | `src/StandIn.Client` | leer, Phase 5 (MAUI/WPF/WinForms/Konsole) |
-| `src/StandIn.Testing` | leer, Phase 3 |
-| `tests/StandIn.AspNetCore.Tests` | xUnit, 60 Testfälle |
+| `src/StandIn.Testing` | Test-Header-Hilfen (Phase 3) |
+| `tests/StandIn.AspNetCore.Tests` | xUnit |
 
 Stand der Phasen siehe [roadmap.md](roadmap.md).

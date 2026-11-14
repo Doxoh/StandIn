@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Primitives;
 
 namespace StandIn.AspNetCore;
 
@@ -36,11 +37,22 @@ public sealed class StandInAuthenticationHandler : AuthenticationHandler<StandIn
             return Task.FromResult(AuthenticateBearer(authorization));
         }
 
+        if (Options.AllowTestHeader
+            && Request.Headers.TryGetValue(StandInDefaults.TestHeaderName, out var headerValue)
+            && !StringValues.IsNullOrEmpty(headerValue))
+        {
+            var headerUser = FindUser(headerValue.ToString());
+
+            return Task.FromResult(headerUser is null
+                ? Fail(StatusCodes.Status403Forbidden, "No StandIn user has the requested id.")
+                : Success(headerUser, accessToken: null));
+        }
+
         if (Options.AllowCookieAuthentication
             && Request.Cookies.TryGetValue(StandInDefaults.CookieName, out var userId)
             && !string.IsNullOrEmpty(userId))
         {
-            var user = Options.Users.FirstOrDefault(candidate => candidate.Id == userId);
+            var user = FindUser(userId);
 
             if (user is not null)
             {
@@ -71,6 +83,8 @@ public sealed class StandInAuthenticationHandler : AuthenticationHandler<StandIn
 
         Response.StatusCode = StatusCodes.Status401Unauthorized;
     }
+
+    private StandInUser? FindUser(string id) => Options.Users.FirstOrDefault(candidate => candidate.Id == id);
 
     private static bool IsBearer(string authorization)
     {

@@ -8,6 +8,9 @@ public static class StandInDefaults
     internal const string CookieName = ".StandIn.User";
     internal const string LocalSource = "Local";
 
+    /// <summary>Test-Header: nennt die Id des Benutzers, als der die Anfrage gilt (nur mit <see cref="StandInOptions.AllowTestHeader"/>).</summary>
+    public const string TestHeaderName = "X-Stuntman-User";
+
     internal const string OverrideUserIdQueryKey = "OverrideUserId";
     internal const string ReturnUrlQueryKey = "ReturnUrl";
 

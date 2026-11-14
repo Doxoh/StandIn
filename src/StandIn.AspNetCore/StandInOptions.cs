@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 
 namespace StandIn.AspNetCore;
 
@@ -40,6 +41,12 @@ public sealed class StandInOptions : AuthenticationSchemeOptions
     /// </summary>
     public bool AllowBearerTokenPassthrough { get; set; }
 
+    /// <summary>
+    /// Test-Header <c>X-Stuntman-User: &lt;Id&gt;</c> (Standard: aus). Achtung: ohne Anmeldung gilt jeder Benutzer,
+    /// deshalb nur in Tests einschalten.
+    /// </summary>
+    public bool AllowTestHeader { get; set; }
+
     public StandInAlignment UserPickerAlignment { get; private set; }
 
     /// <summary>Ist der Server-Endpunkt aktiv? Achtung: er liefert alle Access Tokens ohne Anmeldung aus.</summary>
@@ -71,8 +78,25 @@ public sealed class StandInOptions : AuthenticationSchemeOptions
     }
 
     /// <summary>
+    /// Fuegt Benutzer aus einem Konfigurationsabschnitt hinzu, z. B. <c>GetSection("StandIn")</c> mit
+    /// <c>Users:0:Id</c>, <c>Users:0:Name</c>, ... (gleiche Struktur wie die JSON-Datei).
+    /// </summary>
+    public StandInOptions AddUsersFromConfiguration(IConfiguration configuration, Action<StandInUser>? configureUsers = null)
+    {
+        ArgumentNullException.ThrowIfNull(configuration);
+
+        foreach (var user in StandInUserLoader.FromConfiguration(configuration))
+        {
+            configureUsers?.Invoke(user);
+            AddUser(user, "Configuration");
+        }
+
+        return this;
+    }
+
+    /// <summary>
     /// Laedt Benutzer von einer anderen StandIn-Anwendung mit aktivem Server-Endpunkt.
-    /// Fehler werden geworfen.
+    /// Fehler werden geworfen. Erlaubt ist https; http nur fuer localhost, weil die Antwort Access Tokens enthaelt.
     /// </summary>
     /// <param name="serverBaseUrl">Basis-URL der Server-Anwendung, z. B. https://auth.example.com/</param>
     /// <param name="serverRootPath">Root-Pfad der Server-Anwendung, Standard "/stuntman".</param>
@@ -81,6 +105,14 @@ public sealed class StandInOptions : AuthenticationSchemeOptions
         ArgumentException.ThrowIfNullOrWhiteSpace(serverBaseUrl);
 
         var endpoint = new Uri(new Uri(serverBaseUrl), NormalizeRootPath(serverRootPath) + "/server");
+
+        var isHttps = endpoint.Scheme == Uri.UriSchemeHttps;
+        var isLocalHttp = endpoint.Scheme == Uri.UriSchemeHttp && endpoint.IsLoopback;
+
+        if (!isHttps && !isLocalHttp)
+        {
+            throw new ArgumentException("The StandIn server must be reached via https (http is only allowed for localhost).", nameof(serverBaseUrl));
+        }
 
         foreach (var user in StandInUserLoader.Parse(StandInUserLoader.ReadText(endpoint.AbsoluteUri)))
         {

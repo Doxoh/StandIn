@@ -4,12 +4,24 @@ using System.Linq;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 
 namespace StandIn.AspNetCore;
 
 /// <summary>Marker: ist im Container vorhanden, wenn StandIn in dieser Umgebung aktiv ist.</summary>
 internal sealed class StandInMarker
 {
+}
+
+internal static class StandInServiceProviderExtensions
+{
+    /// <summary>Die Optionen, oder <c>null</c>, wenn StandIn in dieser Umgebung nicht aktiv ist.</summary>
+    internal static StandInOptions? GetStandInOptions(this IServiceProvider services)
+    {
+        return services.GetService<StandInMarker>() is null
+            ? null
+            : services.GetRequiredService<IOptionsMonitor<StandInOptions>>().Get(StandInDefaults.AuthenticationScheme);
+    }
 }
 
 public static class StandInServiceCollectionExtensions

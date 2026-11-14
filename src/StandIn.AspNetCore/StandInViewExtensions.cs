@@ -2,8 +2,6 @@ using System;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 
 namespace StandIn.AspNetCore;
 
@@ -12,15 +10,12 @@ internal static class StandInViewHelper
     /// <summary>Leer, wenn StandIn in dieser Umgebung nicht aktiv ist.</summary>
     public static string Render(HttpContext context, string? returnUrl)
     {
-        var services = context.RequestServices;
+        var options = context.RequestServices.GetStandInOptions();
 
-        if (services.GetService<StandInMarker>() is null)
+        if (options is null)
         {
             return string.Empty;
         }
-
-        var options = services.GetRequiredService<IOptionsMonitor<StandInOptions>>()
-            .Get(StandInDefaults.AuthenticationScheme);
 
         // Ohne Angabe zurueck auf die aktuelle Seite.
         var target = returnUrl ?? $"{context.Request.PathBase}{context.Request.Path}{context.Request.QueryString}";

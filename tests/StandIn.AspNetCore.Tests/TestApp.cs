@@ -28,18 +28,24 @@ internal sealed class TestApp : IAsyncDisposable
 
     public static async Task<TestApp> StartAsync(
         Action<StandInOptions> configure,
-        string environment = "Development")
+        string environment = "Development",
+        Action<IServiceCollection>? configureServices = null)
     {
         var builder = WebApplication.CreateBuilder(new WebApplicationOptions { EnvironmentName = environment });
         builder.WebHost.UseTestServer();
 
         builder.Services.AddAuthentication().AddStandIn(builder.Environment, configure);
         builder.Services.AddAuthorization();
+        configureServices?.Invoke(builder.Services);
 
         var app = builder.Build();
         app.UseAuthentication();
         app.UseAuthorization();
+        app.UseStandInPicker();
         app.MapStandIn();
+
+        app.MapGet("/page", () => Results.Content("<html><body><h1>Hi</h1></body></html>", "text/html; charset=utf-8"));
+        app.MapGet("/fragment", () => Results.Content("<p>no body tag</p>", "text/html; charset=utf-8"));
 
         // Gibt den Benutzernamen zurueck, oder "anonymous".
         app.MapGet("/whoami", (ClaimsPrincipal user) => user.Identity?.Name ?? "anonymous");

@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Security.Claims;
+using Microsoft.Extensions.Configuration;
 
 namespace StandIn.AspNetCore.Tests;
 
@@ -168,5 +169,81 @@ public class UserAndOptionsTests
 
         Assert.True(options.IsAllowedReturnUrl("https://localhost:5173/dashboard"));
         Assert.False(options.IsAllowedReturnUrl("https://localhost:5174/dashboard"));
+    }
+
+    // ---- IConfiguration und Server-Konfiguration ----
+
+    private static IConfiguration Configuration(params (string Key, string Value)[] values) =>
+        new ConfigurationBuilder()
+            .AddInMemoryCollection(values.ToDictionary(v => v.Key, v => (string?)v.Value))
+            .Build();
+
+    [Fact]
+    public void Users_can_be_read_from_configuration()
+    {
+        var configuration = Configuration(
+            ("StandIn:Users:0:Id", "ann"),
+            ("StandIn:Users:0:Name", "Ann"),
+            ("StandIn:Users:0:AccessToken", "ann-token"),
+            ("StandIn:Users:0:Description", "Admin"),
+            ("StandIn:Users:0:Claims:0:Type", "role"),
+            ("StandIn:Users:0:Claims:0:Value", "Administrator"));
+
+        var options = new StandInOptions().AddUsersFromConfiguration(configuration.GetSection("StandIn"));
+
+        var user = Assert.Single(options.Users);
+        Assert.Equal("ann", user.Id);
+        Assert.Equal("ann-token", user.AccessToken);
+        Assert.Equal("Admin", user.Description);
+        Assert.Equal("Configuration", user.Source);
+        Assert.Contains(user.Claims, c => c.Type == "role" && c.Value == "Administrator");
+    }
+
+    [Fact]
+    public void Missing_configuration_section_adds_no_users()
+    {
+        var options = new StandInOptions().AddUsersFromConfiguration(Configuration().GetSection("StandIn"));
+
+        Assert.Empty(options.Users);
+    }
+
+    [Fact]
+    public void Configuration_without_required_fields_is_rejected()
+    {
+        var configuration = Configuration(("StandIn:Users:0:Id", "ann"));
+
+        Assert.Throws<InvalidDataException>(
+            () => new StandInOptions().AddUsersFromConfiguration(configuration.GetSection("StandIn")));
+    }
+
+    [Fact]
+    public void Configuration_users_can_be_adjusted_per_user()
+    {
+        var configuration = Configuration(("Users:0:Id", "ann"), ("Users:0:Name", "Ann"));
+
+        var options = new StandInOptions().AddUsersFromConfiguration(configuration, user => user.AddRole("Tester"));
+
+        Assert.Contains(options.Users.Single().Claims, c => c.Type == "role" && c.Value == "Tester");
+    }
+
+    [Theory]
+    [InlineData("http://auth.example.com/")]
+    [InlineData("ftp://auth.example.com/")]
+    [InlineData("file:///tmp/")]
+    public void Server_configuration_needs_https_unless_the_server_is_local(string url)
+    {
+        Assert.Throws<ArgumentException>(() => new StandInOptions().AddConfigurationFromServer(url));
+    }
+
+    [Fact]
+    public void Local_http_servers_are_allowed()
+    {
+        Exception? reported = null;
+
+        // Erlaubt, scheitert aber am Verbindungsaufbau (Port 1) und nicht an der https-Regel.
+        new StandInOptions().TryAddConfigurationFromServer("http://localhost:1/", e => reported = e);
+
+        Assert.NotNull(reported);
+        Assert.IsNotType<ArgumentException>(reported);
     }
 }
