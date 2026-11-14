@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\samples\MinimalApi\StandIn.Samples.MinimalApi.csproj" />
+    <ProjectReference Include="..\..\samples\Mvc\StandIn.Samples.Mvc.csproj" />
+    <ProjectReference Include="..\..\src\StandIn.Client\StandIn.Client.csproj" />
+    <ProjectReference Include="..\..\src\StandIn.Testing\StandIn.Testing.csproj" />
+  </ItemGroup>
+
+</Project>

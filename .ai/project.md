@@ -15,6 +15,8 @@
 | `src/StandIn.Blazor` | Picker-Komponente, AuthenticationStateProvider (Phase 5b) |
 | `src/StandIn.Client` | Session und Token-Handler (Phase 5a) |
 | `src/StandIn.Testing` | Test-Header-Hilfen (Phase 3) |
+| `samples/MinimalApi`, `samples/Mvc` | Beispiel-Apps (Phase 5c) |
 | `tests/StandIn.AspNetCore.Tests` | xUnit |
+| `tests/StandIn.Samples.Tests` | Smoke-Tests der Beispiel-Apps |
 
 Stand der Phasen siehe [roadmap.md](roadmap.md).

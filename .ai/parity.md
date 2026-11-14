@@ -21,7 +21,6 @@
 
 - Asynchrone Varianten von `AddUsersFromJson` und `AddConfigurationFromServer` (die Optionen-API bleibt fluent und synchron, Timeout 10 s). Nachrüsten, wenn jemand es braucht.
 - Tag Helper `<standin-picker />` (siehe [conventions.md](conventions.md)).
-- `StandIn.Testing` ohne `WebApplicationFactory`-Hilfsmethode und ohne Abhängigkeit zu `Microsoft.AspNetCore.Mvc.Testing`: Die Methode wäre ohne eigenen Einstiegspunkt nicht testbar. Das Muster steht in der Doku (`WithWebHostBuilder` + `AllowStandInTestHeader()` + `AsStandInUser`).
-
+- Beispiel-Apps nur für Minimal API (Bearer, Token-Endpunkt, Client) und MVC (Cookie, Picker). Razor Pages, Blazor Server und Blazor WebAssembly als Beispiel fehlen: gleiche Mechanik, aber zusätzlicher Pflegeaufwand; die Vorgehensweise steht in [architecture.md](architecture.md).
 - OpenAPI-Sicherheitsschema als Paketcode (siehe [architecture.md](architecture.md)).
 - Eigene Auswertung von `X-Forwarded-*`: das macht `UseForwardedHeaders` der Anwendung.

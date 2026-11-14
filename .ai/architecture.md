@@ -72,13 +72,17 @@ Die Token-Antwort enthält `name_claim_type`, `role_claim_type` und die vollstä
 
 `StandIn.Blazor` hängt nur an `StandIn.Client` und `Microsoft.AspNetCore.Components.Authorization`/`.Web` (läuft im Browser). Der Zustand liegt nur im Speicher; ein Neuladen meldet wieder den Start-Benutzer (`StandInClientOptions.UserId`) an. Auch in Release ist der Client harmlos: ohne Token-Endpunkt auf dem Server schlägt die Anmeldung mit 404 fehl.
 
+## Beispiel-Apps und Smoke-Tests
+
+`samples/MinimalApi` (Bearer, Token-Endpunkt) und `samples/Mvc` (Cookie, `@Html.StandInUserPicker()`), jeweils mit eigener `Program`-Klasse im eigenen Namespace (kein Top-Level-Programm, damit zwei Beispiele in einem Testprojekt ohne Namenskonflikt referenzierbar sind). `tests/StandIn.Samples.Tests` startet sie mit `WebApplicationFactory` und prüft Anmeldung, Rollen, Token-Endpunkt, `StandIn.Client`, `StandIn.Testing` und das Verhalten außerhalb von Development.
+
 ## Benutzerquellen
 
 `AddUser`, `AddUsersFromJson(pfadOderUrl)`, `AddUsersFromConfiguration(IConfiguration)` (gleiche Struktur wie das JSON, z. B. `GetSection("StandIn")` mit `Users:0:Id`), `AddConfigurationFromServer` und `TryAddConfigurationFromServer` (nur https, http nur für localhost). Jeder Benutzer merkt sich seine Quelle (`Local`, Pfad/URL, `Configuration`, Server-URL).
 
 ## Pakete
 
-`StandIn.Testing`: `services.AllowStandInTestHeader()` schaltet den Test-Header ein, `httpClient.AsStandInUser("id")` setzt ihn für alle Anfragen. Abhängig nur von `StandIn.AspNetCore`.
+`StandIn.Testing` (hängt an `StandIn.AspNetCore` und `Microsoft.AspNetCore.Mvc.Testing`): `services.AllowStandInTestHeader()` schaltet den Test-Header ein, `httpClient.AsStandInUser("id")` setzt ihn für alle Anfragen, `factory.CreateStandInClient("id")` macht beides für eine `WebApplicationFactory`.
 
 ## Claims im Principal
 
