@@ -25,6 +25,7 @@ public sealed class StandInSession
     private bool _initialized;
 
     /// <param name="http">Client mit <c>BaseAddress</c> des Servers.</param>
+    /// <param name="options">Root-Pfad und Start-Benutzer.</param>
     public StandInSession(HttpClient http, StandInClientOptions options)
     {
         ArgumentNullException.ThrowIfNull(http);
