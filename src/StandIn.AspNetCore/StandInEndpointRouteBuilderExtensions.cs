@@ -185,13 +185,18 @@ public static class StandInEndpointRouteBuilderExtensions
                 return;
             }
 
+            // Die Claims, die der Server fuer den Benutzer bildet: Clients bauen daraus denselben Principal.
+            var principal = user.ToPrincipal(StandInDefaults.AuthenticationScheme);
+
             await context.Response.WriteAsJsonAsync(new
             {
                 access_token = user.AccessToken,
                 token_type = "Bearer",
                 user_id = user.Id,
                 name = user.Name,
-                claims = user.Claims.Select(claim => new { type = claim.Type, value = claim.Value }),
+                name_claim_type = user.NameClaimType,
+                role_claim_type = user.RoleClaimType,
+                claims = principal.Claims.Select(claim => new { type = claim.Type, value = claim.Value }),
             });
         });
     }

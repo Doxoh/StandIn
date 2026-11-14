@@ -13,7 +13,7 @@
 | --- | --- |
 | `src/StandIn.AspNetCore` | Kern, umgesetzt (Phase 1 und 2) |
 | `src/StandIn.Blazor` | leer, Phase 5 |
-| `src/StandIn.Client` | leer, Phase 5 (MAUI/WPF/WinForms/Konsole) |
+| `src/StandIn.Client` | Session und Token-Handler (Phase 5a) |
 | `src/StandIn.Testing` | Test-Header-Hilfen (Phase 3) |
 | `tests/StandIn.AspNetCore.Tests` | xUnit |
 
