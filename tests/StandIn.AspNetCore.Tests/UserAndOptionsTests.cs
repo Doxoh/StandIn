@@ -153,6 +153,7 @@ public class UserAndOptionsTests
     [InlineData("/home?x=1", true)]
     [InlineData("//evil.example", false)]
     [InlineData("/\\evil.example", false)]
+    [InlineData("/\t/evil.example", false)]
     [InlineData("https://evil.example/x", false)]
     [InlineData("javascript:alert(1)", false)]
     [InlineData("", false)]

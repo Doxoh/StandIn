@@ -46,7 +46,7 @@ app.MapStandIn();
 You get the user picker like this:
 
 - MVC and Razor Pages: `@Html.StandInUserPicker()` in the view.
-- Blazor Server and any HTML page: `app.UseStandInPicker()` inserts it into every page.
+- Blazor Server and any HTML page: `app.UseStandInPicker()` inserts it into every page. It buffers each HTML response to insert the picker, so Blazor streaming rendering (`[StreamRendering]`) shows the page only when it is complete. Use `@Html.StandInUserPicker()` where that matters.
 - Blazor WebAssembly, Hybrid, Auto-WASM: `<StandInPicker />` from `StandIn.Blazor`.
 
 Set position and alignment with `SetUserPickerAlignment` and `SetUserPickerVerticalPosition`.

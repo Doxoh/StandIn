@@ -1,11 +1,12 @@
 @using System.Collections.Generic
+@using System.Net.Http
 @using StandIn.Client
 @implements IDisposable
 @inject StandInSession Session
 
 <span class="standin-picker">
     <select aria-label="StandIn" @onchange="SelectAsync">
-        <option value="" selected="@(Session.Current is null)">anonymous</option>
+        <option value="" selected="@(Session.Current is null)">@(_failed ? "StandIn: server not reachable" : "anonymous")</option>
         @foreach (var user in _users)
         {
             <option value="@user.Id" title="@user.Description" selected="@(Session.Current?.UserId == user.Id)">@user.Name</option>
@@ -15,11 +16,12 @@
 
 @code {
     private IReadOnlyList<StandInUserInfo> _users = new List<StandInUserInfo>();
+    private bool _failed;
 
     protected override async Task OnInitializedAsync()
     {
         Session.Changed += OnSessionChanged;
-        _users = await Session.GetUsersAsync();
+        await TryAsync(async () => _users = await Session.GetUsersAsync());
     }
 
     private void OnSessionChanged() => _ = InvokeAsync(StateHasChanged);
@@ -34,7 +36,21 @@
         }
         else
         {
-            await Session.SignInAsync(userId);
+            await TryAsync(() => Session.SignInAsync(userId));
+        }
+    }
+
+    // A development helper must not take the page down when the API is not running.
+    private async Task TryAsync(Func<Task> action)
+    {
+        try
+        {
+            await action();
+            _failed = false;
+        }
+        catch (HttpRequestException)
+        {
+            _failed = true;
         }
     }
 

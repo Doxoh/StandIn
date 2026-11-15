@@ -217,6 +217,8 @@ public sealed class StandInOptions : AuthenticationSchemeOptions
         return !string.IsNullOrEmpty(origin) && _allowedReturnOrigins.Contains(origin);
     }
 
+    internal StandInUser? FindUser(string? id) => Users.FirstOrDefault(user => user.Id == id);
+
     internal StandInOptions AddUser(StandInUser user, string? source)
     {
         ArgumentNullException.ThrowIfNull(user);
@@ -237,7 +239,7 @@ public sealed class StandInOptions : AuthenticationSchemeOptions
 
     /// <summary>
     /// Only local paths ("/home") or allowed origins are valid targets after sign-in.
-    /// "//host" and "/\host" do not count as local (open-redirect protection).
+    /// "//host", "/\host" and paths with control characters do not count as local (open-redirect protection).
     /// </summary>
     internal bool IsAllowedReturnUrl(string? url)
     {
@@ -248,7 +250,8 @@ public sealed class StandInOptions : AuthenticationSchemeOptions
 
         if (url[0] == '/')
         {
-            return url.Length == 1 || (url[1] != '/' && url[1] != '\\');
+            // Browsers drop tabs and line breaks inside URLs, so "/<tab>/host" would become "//host".
+            return !url.Any(char.IsControl) && (url.Length == 1 || (url[1] != '/' && url[1] != '\\'));
         }
 
         if (Uri.TryCreate(url, UriKind.Absolute, out var uri)

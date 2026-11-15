@@ -26,7 +26,7 @@ internal static class StandInPickerRenderer
     public static string RenderPicker(StandInOptions options, ClaimsPrincipal? principal, string pathBase, string? returnUrl)
     {
         var activeId = principal?.FindFirst(StandInDefaults.UserIdClaimType)?.Value;
-        var activeName = options.Users.FirstOrDefault(user => user.Id == activeId)?.Name;
+        var activeName = options.FindUser(activeId)?.Name;
 
         var html = new StringBuilder();
         html.Append("<style>").Append(Css).Append("</style>");

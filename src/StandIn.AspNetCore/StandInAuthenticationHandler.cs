@@ -41,7 +41,7 @@ public sealed class StandInAuthenticationHandler : AuthenticationHandler<StandIn
             && Request.Headers.TryGetValue(StandInDefaults.TestHeaderName, out var headerValue)
             && !StringValues.IsNullOrEmpty(headerValue))
         {
-            var headerUser = FindUser(headerValue.ToString());
+            var headerUser = Options.FindUser(headerValue.ToString());
 
             return Task.FromResult(headerUser is null
                 ? Fail(StatusCodes.Status403Forbidden, "No StandIn user has the requested id.")
@@ -52,7 +52,7 @@ public sealed class StandInAuthenticationHandler : AuthenticationHandler<StandIn
             && Request.Cookies.TryGetValue(StandInDefaults.CookieName, out var userId)
             && !string.IsNullOrEmpty(userId))
         {
-            var user = FindUser(userId);
+            var user = Options.FindUser(userId);
 
             if (user is not null)
             {
@@ -83,8 +83,6 @@ public sealed class StandInAuthenticationHandler : AuthenticationHandler<StandIn
 
         Response.StatusCode = StatusCodes.Status401Unauthorized;
     }
-
-    private StandInUser? FindUser(string id) => Options.Users.FirstOrDefault(candidate => candidate.Id == id);
 
     private static bool IsBearer(string authorization)
     {
