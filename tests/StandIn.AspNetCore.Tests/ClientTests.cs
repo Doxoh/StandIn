@@ -123,6 +123,35 @@ public class ClientTests
     }
 
     [Fact]
+    public async Task Failed_first_sign_in_is_retried_on_the_next_call()
+    {
+        await using var app = await StartAsync();
+        var handler = new FailOnceHandler { InnerHandler = app.App.GetTestServer().CreateHandler() };
+        using var http = new HttpClient(handler) { BaseAddress = new Uri("http://localhost/") };
+        var session = new StandInSession(http, new StandInClientOptions { UserId = "admin" });
+
+        await Assert.ThrowsAsync<HttpRequestException>(async () => await session.GetAccessTokenAsync());
+
+        Assert.Equal("admin-token", await session.GetAccessTokenAsync());
+    }
+
+    private sealed class FailOnceHandler : DelegatingHandler
+    {
+        private bool _failed;
+
+        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, System.Threading.CancellationToken cancellationToken)
+        {
+            if (_failed)
+            {
+                return base.SendAsync(request, cancellationToken);
+            }
+
+            _failed = true;
+            throw new HttpRequestException("Server is still starting.");
+        }
+    }
+
+    [Fact]
     public async Task Handler_without_a_user_sends_no_token()
     {
         await using var app = await StartAsync();

@@ -55,7 +55,7 @@ public static class StandInEndpointRouteBuilderExtensions
                     return;
                 }
 
-                var user = options.Users.FirstOrDefault(candidate => candidate.Id == userId);
+                var user = options.FindUser(userId);
 
                 if (user is null)
                 {
@@ -177,7 +177,7 @@ public static class StandInEndpointRouteBuilderExtensions
                 return;
             }
 
-            var user = options.Users.FirstOrDefault(candidate => candidate.Id == userId);
+            var user = options.FindUser(userId);
 
             if (user is null)
             {

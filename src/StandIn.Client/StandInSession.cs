@@ -93,12 +93,13 @@ public sealed class StandInSession
             {
                 if (!_initialized)
                 {
-                    _initialized = true;
-
+                    // Set only after a successful sign-in, so a failed first attempt (server still starting) is retried.
                     if (!string.IsNullOrWhiteSpace(_initialUserId))
                     {
                         await SignInAsync(_initialUserId, cancellationToken);
                     }
+
+                    _initialized = true;
                 }
             }
             finally
